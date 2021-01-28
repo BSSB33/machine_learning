@@ -14,7 +14,20 @@ Despite passing the subject at the university, I was very far from being satisfi
 - Lecure slides
 
 ### Machine Learning A-Z Hands-On Python online course from Udemy:
-In progress...
+(`https://www.superdatascience.com/pages/machine-learning`)
+
+- Part 1: Data Preprocessing
+- Part 2: Regression
+	- Section 5. Welcome to Part 2!
+	- Section 6. Simple Linear Regression
+	- Section 7. Multiple Linear Regression
+	- Section 8. Polynomial Regression
+	- Section 9. Support Vector Regression (SVR)
+	- Section 10. Decision Tree Regression
+	- Section 11. Random Forest Regression
+	- Section 12. Evaluating Regression Models Performance
+	- Section 13. Regularization Methods
+	- Section 14. Sections Recap
 
 
 
