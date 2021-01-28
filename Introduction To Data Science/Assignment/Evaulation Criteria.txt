@@ -1,0 +1,14 @@
+Dear Students,
+
+Semestral projects will be evaluated based on the following criteria
+
+- [60 points] The correctness of the data analytics part of your work, ie. you have used various steps of the data analytics process correctly;
+- [30 points] Creativity, ie. how your work is creative in using and combining various approaches, besides the minimal requirements for the correctness, described above;
+- [10 points] Quality of the report provided, ie. its content and style.
+
+Your reports and program as well as LaTEX source codes will undergo plagiarism detection. In case of high similarity of materials provided by two or more students, only the first, ie. the earliest, submission will get evaluated while the other works will get 0 points.
+
+Students who receive less than 60 points for their semestral project are not eligible for the oral exam.
+
+Best regards,
+Tomas

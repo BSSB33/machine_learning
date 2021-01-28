@@ -1,0 +1,22 @@
+Dear Students,
+
+The data set, related to customer credit risk, and the description of the attributes are uploaded in the Files.
+
+There are three tasks for the semestral project, such that
+1) Develop a prediction model to classify the customers as good or bad;
+2) Cluster the customers into various groups;
+3) Provide some ideas on how frequent pattern mining could be utilized to uncover some patterns in the data and/or to enhance the classification;
+
+You have to write a report, in LaTEX, of 8 to 10 pages in Springer LNCS style about your work and the results achieved. The template for the project can be found at
+https://www.springer.com/gp/computer-science/lncs/conference-proceedings-guidelines
+
+You have to upload two files into Canvas, such that
+1) The prepared report (in pdf), named [student's full name]-[Neptun Code].pdf;
+2) The LaTEX source files (in a compressed archive), named [student's full name]-[Neptun Code].zip;
+2) The related program source codes (in plain text), named [student's full name]-[Neptun Code].txt (in case of more source files, just copy-paste all into one text file).
+Please, besides uploading these files into Canvas, send them by email to horvatha@inf.elte.hu as well.
+
+The deadline for uploading the files (the report, the LaTEX and program source codes) is 11th of December 2020.
+
+Best regards,
+Tomas
