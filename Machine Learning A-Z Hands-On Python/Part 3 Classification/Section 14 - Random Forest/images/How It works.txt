@@ -1,0 +1,1 @@
+Many decision, trees each one predicting a result and then based on a majority vote the ultimate prediction is made.
