@@ -1,6 +1,6 @@
 # Introduction to Data Science subject at ELTE and the Machine Learning A-Z Hands-On Python repository
 Welcome!
-This Repository contains my codes and useful materials from the followint courses:
+This Repository contains my codes and useful materials mainly from the followint courses:
 - 'Introduction to Data Science' subject at ELTE
 - 'Machine Learning A-Z Hands-On Python' online course from Udemy
 - 'Machine Learning' subject at ELTE
@@ -27,8 +27,14 @@ Despite passing the subject at the university, I was very far from being satisfi
 
 - Part 1: Data Preprocessing - Done
 - Part 2: Regression - Done
-- Part 3: Classification - Started
+- Part 3: Classification - Done
+- Part 4: Clustering - Next
 
+### Learning/Practice Materials
+Additional data, class materials for Machine Learning:
+- ELTE Software for Advanced Machine Learning (Class Materials + Assignment)
+- ELTE Deep Neuron Networks Assignments (Only Resource)
+- BME Machine Learning Practice Class Materials (Only Resource)
 
 
 
