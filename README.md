@@ -12,14 +12,14 @@ Despite passing the subject at the university, I was very far from being satisfi
 
 ### Introduction to Data Science subject at ELTE:
 - Used code of Assignment in `.py` extension and other code snippets in the form of a Jupiter Notebook (`.ipynb`)
-- Final report with used models and techniques with the task description. (`.pdf`)
+- Final report with used models and techniques with the task description. (`.pdf`) The Report Is available here [Intro Report](https://github.com/BSSB33/machine_learning/blob/main/Introduction%20To%20Data%20Science/Assignment/Final_Report.pdf)
 - Other materials, charts generated.
 - Class materials
 - Lecure slides
 
-### 'Machine Learning' subject at ELTE:
+### Machine Learning subject at ELTE:
 - Used code of Assignment in `.py` extension and other code snippets in the form of a Jupiter Notebook (`.ipynb`)
-- Final report with used models and techniques with the task description. (`.pdf`)
+- Final report with used models and techniques with the task description. (`.pdf`) The Report Is available here [ML Report](https://github.com/BSSB33/machine_learning/blob/main/Semester%20project%20-%20ML%20challenge/SUBMITTED/Machine_Learning_Assignment.pdf)
 - Other materials, prediction results, example images.
 
 ### Machine Learning A-Z Hands-On Python online course from Udemy:
@@ -30,12 +30,14 @@ Despite passing the subject at the university, I was very far from being satisfi
 - Part 3: Classification - Done
 - Part 4: Clustering - Next
 
+### Data Science Lab:
+This lab was spearated from this repository, but it can be found here: Link to the DSC-Lab repository [DSC-Lab Link](https://github.com/BSSB33/DSC-Lab/)  
+The Paper/Report Is available here [Lab Report/Paper](https://github.com/BSSB33/DSC-Lab/blob/main/Data_Science_Lab___Paper_2021.pdf)
+
 ### Learning/Practice Materials
 Additional data, class materials for Machine Learning:
 - ELTE Software for Advanced Machine Learning (Class Materials + Assignment)
 - ELTE Deep Neuron Networks Assignments (Only Resource)
 - BME Machine Learning Practice Class Materials (Only Resource)
 
-
-
-Please note that the purpose of this repository is to make the theory and the codebase easily accessible and to show how I got better in this field (Hopefully) 2021_Jan.
+Please note that the purpose of this repository is to make the theory and the codebase easily accessible and to show how I got better in this field. 2021_June.
