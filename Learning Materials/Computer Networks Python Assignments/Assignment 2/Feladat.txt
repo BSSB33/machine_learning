@@ -1,0 +1,55 @@
+ Áramkör szimuláció
+
+Készíts programot, ami leszimulálja az erőforrások lefoglalását és felszabadítását a JSON fájlban megadott topológia, kapacitások és igények alapján!
+
+Script paraméterezése: python3 client.py cs.json
+
+A program kimenete:
+
+    esemény sorszám. <esemény név>: <node1><-><node2> st:<szimuálciós idő> [- <sikeres/sikertelen>]
+
+Pl.:
+
+    igény foglalás: A<->C st:1 – sikeres
+
+    igény foglalás: B<->C st:2 – sikeres
+
+    igény felszabadítás: A<->C st:5
+
+    igény foglalás: D<->C st:6 – sikeres
+
+    igény foglalás: A<->C st:7 – sikertelen
+
+…
+
+Leadás: A program leadása a BE-AD rendszeren .zip formátumban, amiben egy client.py szerepeljen!
+
+Adott
+a cs 1 json, ami tartalmazza egy irányítatlan gráf leírását A gráf végpont
+(end points és switch switches csomópontokat tartalmaz Az élek links
+kapacitással rendelkeznek (valós szám) Tegyük fel, hogy egy áramkörkapcsolt
+hálózatban vagyunk és valamilyen RRP szerű erőforrás foglaló protokollt használunk
+Feltesszük, hogy csak a linkek megosztandó és szűk erőforrások A json tartalmazza a
+kialakítható lehetséges útvonalakat possible cicuits továbbá a rendszerbe
+beérkező, két végpontot összekötő áramkörigényeket kezdő és vég időponttal A
+szimuláció a t= 1 időpillanatban kezdődik és t= duration időpillanatban ér véget
+Készíts programot, ami leszimulálja az erőforrások lefoglalását és felszabadítását a
+JSON fájlban megadott topológia, kapacitások és igények alapján!
+A program bemenete: cs1.json (
+első parancssori argumentum
+A program kimenete: Minden igény lefoglalását és felszabadítását írassuk ki a
+stdout
+ra . Foglalás esetén jelezzük, hogy sikeres vagy sikertelen volt e. Megj.: sikertelen
+esetben az igénnyel más teendőnk nincs, azt eldobhatjuk.
+Pl.:
+1. igény foglalás: A<
+A<-->C st:1 sikeres
+2. igény foglalás: B<
+B<-->C st:2 sikeres
+3. igény felszabadítás: A<
+A<-->C st:5
+4. igény foglalás: D<
+D<-->C st:6 sikeres
+5. igény foglalás: A<
+A<-->C st:7 sikertelen
+…

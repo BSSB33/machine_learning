@@ -39,5 +39,6 @@ Additional data, class materials for Machine Learning:
 - ELTE Software for Advanced Machine Learning (Class Materials + Assignment)
 - ELTE Deep Neuron Networks Assignments (Only Resource)
 - BME Machine Learning Practice Class Materials (Only Resource)
+- ELTE Computer Networks Assignments - Fun Python Exercises with Sockets (Assignments)
 
 Please note that the purpose of this repository is to make the theory and the codebase easily accessible and to show how I got better in this field. 2021_June.
