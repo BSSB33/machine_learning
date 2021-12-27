@@ -38,15 +38,15 @@ class Patient:
         self.trials = patient_therapies
 
 
-def load_patients():
+def load_demo_patients():
     c1 = Condition("Cond1", "High Blood Pressure", "Blood Pressure")
     c2 = Condition("Cond2", "Heart Arrhythmia", "Heath Condition")
     t1 = Therapy("Th1", "Acetoxybenzoic Acid (Aspirin)", "Acetoxybenzoic Acid (Aspirin)")
     t2 = Therapy("Th2", "Cough Syrup Quibron", "Sugar")
     p_c1 = Patent_condition("pc1", 20210915, 20210915, "Cond1")
     p_c2 = Patent_condition("pc2", 20210602, 20210930, "Cond2")
-    p_t1 = Patient_therapy("tr1", 20210915, 20211215, "pc1", "Th1", "10%")
-    p_t2 = Patient_therapy("tr2", 20210102, 20210130, "pc2", "Th2", "100%")
+    p_t1 = Patient_therapy("tr1", 20210915, 20211215, "pc1", "Th1", 10)
+    p_t2 = Patient_therapy("tr2", 20210102, 20210130, "pc2", "Th2", 100)
     patient1 = Patient(1, "John", [p_c1.__dict__, p_c2.__dict__], [p_t1.__dict__, p_t2.__dict__])
     patient2 = Patient(1, "Peter", [p_c1.__dict__], [p_t1.__dict__])
 
@@ -61,10 +61,18 @@ def export_dataset(conditions, therapies, patients):
     outfile.close()
 
 def import_dataset():
-    with open('dataset.json') as json_file:
+    conditions = []
+    with open('dataset.json', 'r') as json_file:
         data = json.load(json_file)
-        for key in data:
-            print(data[key])
+        for condition in data["Conditions"]:
+            obj = json.loads(json.dumps(condition), object_hook=lambda d: Condition(**d))
+            conditions.append(obj)
+            print(obj.__dict__)
+        for therapy in data["Therapies"]:
+            obj = json.loads(json.dumps(therapy), object_hook=lambda d: Therapy(**d))
+            conditions.append(obj)
+            print(obj.__dict__)
+    json_file.close()
     
 if __name__ == "__main__":
     """ 
@@ -73,13 +81,9 @@ if __name__ == "__main__":
     Input 3: A condition c[q]
     Output: A therapy th[ans]
     """
-    conditions, therapies, patients = load_patients()
-    export_dataset(conditions, therapies, patients)
+    #conditions, therapies, patients = load_demo_patients()
+    #export_dataset(conditions, therapies, patients)
     import_dataset()
-"""     f = open('person.json')
-    data = json.load(f)
-    for key in data:
-        print(key) 
-    f.close()"""
+
 
  
