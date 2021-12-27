@@ -1,0 +1,86 @@
+{
+    "Conditions": [
+        {
+            "id": "Cond1",
+            "name": "High Blood Pressure",
+            "type": "Blood Pressure"
+        },
+        {
+            "id": "Cond2",
+            "name": "Heart Arrhythmia",
+            "type": "Heath Condition"
+        }
+    ],
+    "Therapies": [
+        {
+            "id": "Th1",
+            "name": "Acetoxybenzoic Acid (Aspirin)",
+            "type": "Acetoxybenzoic Acid (Aspirin)"
+        },
+        {
+            "id": "Th2",
+            "name": "Cough Syrup Quibron",
+            "type": "Sugar"
+        }
+    ],
+    "Patients": [
+        {
+            "id": 1,
+            "name": "John",
+            "conditions": [
+                {
+                    "id": "pc1",
+                    "diagnosed": 20210915,
+                    "cured": 20210915,
+                    "kind": "Cond1"
+                },
+                {
+                    "id": "pc2",
+                    "diagnosed": 20210602,
+                    "cured": 20210930,
+                    "kind": "Cond2"
+                }
+            ],
+            "trials": [
+                {
+                    "id": "tr1",
+                    "start": 20210915,
+                    "end": 20211215,
+                    "condition": "pc1",
+                    "therapy": "Th1",
+                    "successful": 10
+                },
+                {
+                    "id": "tr3",
+                    "start": 20210102,
+                    "end": 20210130,
+                    "condition": "pc2",
+                    "therapy": "Th3",
+                    "successful": 90
+                }
+            ]
+        },
+        {
+            "id": 1,
+            "name": "Peter",
+            "conditions": [
+                {
+                    "id": "pc3",
+                    "diagnosed": 20210603,
+                    "cured": 20210905,
+                    "kind": "Cond2"
+                }
+            ],
+            "trials": [
+                {
+                    "id": "tr3",
+                    "start": 20210102,
+                    "end": 20210130,
+                    "condition": "pc2",
+                    "therapy": "Th3",
+                    "successful": 90
+                }
+            ]
+        }
+    ]
+}
