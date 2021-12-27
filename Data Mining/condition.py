@@ -39,7 +39,6 @@ class Patient:
 
 
 def load_patients():
-    #TODO: Load the dataset from the json file
     c1 = Condition("Cond1", "High Blood Pressure", "Blood Pressure")
     c2 = Condition("Cond2", "Heart Arrhythmia", "Heath Condition")
     t1 = Therapy("Th1", "Acetoxybenzoic Acid (Aspirin)", "Acetoxybenzoic Acid (Aspirin)")
@@ -61,7 +60,12 @@ def export_dataset(conditions, therapies, patients):
         json.dump({"Conditions": conditions, "Therapies": therapies, "Patients": patients}, outfile)
     outfile.close()
 
-
+def import_dataset():
+    with open('dataset.json') as json_file:
+        data = json.load(json_file)
+        for key in data:
+            print(data[key])
+    
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -71,25 +75,11 @@ if __name__ == "__main__":
     """
     conditions, therapies, patients = load_patients()
     export_dataset(conditions, therapies, patients)
-    
-    """
-    with open('person.json', 'w') as f:
-        json.dump([patient1.__dict__], f)
-    f.close()
-
-     
-    with open('therapy.json', 'w') as f:
-        json.dump([t1.__dict__, t2.__dict__], f)
-    f.close()
-
-    with open('condition.json', 'w') as f:
-        json.dump([c1.__dict__, c2.__dict__], f) 
-    f.close()
-    """
-
-    f = open('person.json')
+    import_dataset()
+"""     f = open('person.json')
     data = json.load(f)
     for key in data:
-        print(key)
+        print(key) 
+    f.close()"""
 
-    f.close()
+ 
