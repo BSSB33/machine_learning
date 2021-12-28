@@ -1,0 +1,54 @@
+{
+    "Conditions": [
+        {
+            "id": "00",
+            "name": "Condition 00",
+            "type": "Condition"
+        }
+    ],
+    "Therapies": [
+        {
+            "id": "00",
+            "name": "Therapy 00",
+            "type": "Therapy"
+        }
+    ],
+    "Patients": [
+        {
+            "id": 0,
+            "name": "Patient 0",
+            "conditions": [
+                {
+                    "id": "00",
+                    "diagnosed": 20200101,
+                    "cured": 20200101,
+                    "kind": "00"
+                },
+                {
+                    "id": "01",
+                    "diagnosed": 20200102,
+                    "cured": 20200102,
+                    "kind": "01"
+                }
+            ],
+            "trials": [
+                {
+                    "id": "00",
+                    "start": 20200101,
+                    "end": 20200101,
+                    "condition": "00",
+                    "therapy": "00",
+                    "successful": 10
+                },
+                {
+                    "id": "01",
+                    "start": 20200102,
+                    "end": 20200102,
+                    "condition": "01",
+                    "therapy": "01",
+                    "successful": 10
+                }
+            ]
+        }
+    ]
+}

@@ -100,6 +100,30 @@ def import_dataset(file):
             patients.append(p)
     json_file.close()
     return conditions, therapies, patients
+
+def generate_dataset(file, n_patients, n_conditions, n_therapies, n_trials):
+    conditions = []
+    therapies = []
+    patients = []
+    patient_conditions = []
+    patient_therapies = []
+    for i in range(n_patients):
+        for j in range(n_conditions):
+            c = Condition(str(i) + str(j), "Condition " + str(i) + str(j), "Condition")
+            conditions.append(c)
+        for k in range(n_therapies):
+            t = Therapy(str(i) + str(k), "Therapy " + str(i) + str(k), "Therapy")
+            therapies.append(t)
+        for l in range(n_trials):
+            p_c = Patent_condition(str(i) + str(l), 20200101 + l, 20200101 + l, str(i) + str(l))
+            patient_conditions.append(p_c)
+            p_t = Patient_therapy(str(i) + str(l), 20200101 + l, 20200101 + l, str(i) + str(l), str(i) + str(l), 10)
+            patient_therapies.append(p_t)
+        p = Patient(i, "Patient " + str(i), patient_conditions, patient_therapies)
+        patients.append(p)
+        patient_conditions = []
+        patient_therapies = []
+    export_dataset(file, conditions, therapies, patients)
     
 if __name__ == "__main__":
     """ 
@@ -118,5 +142,6 @@ if __name__ == "__main__":
     conditions, therapies, patients = import_dataset("dataset.json")
     export_dataset("dataset_new.json", conditions, therapies, patients)
 
+    generate_dataset("dataset_tmp.json", 1, 1, 1, 2)
 
  
