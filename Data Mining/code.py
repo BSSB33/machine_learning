@@ -67,18 +67,17 @@ def export_dataset(file, conditions, therapies, patients):
     for patient in patients:
         printable_patients.append(Patient(patient.id, patient.name, [condition.__dict__ for condition in patient.conditions], [trial.__dict__ for trial in patient.trials]))
 
-    #TODO Patients is not serializable, rewrite printable_patients below if possible
     with open(file, 'w') as outfile:
-        json.dump({"Conditions": [condition.__dict__ for condition in conditions], "Therapies": [therapy.__dict__ for therapy in therapies], "Patients": printable_patients}, outfile)
+        json.dump({"Conditions": [condition.__dict__ for condition in conditions], "Therapies": [therapy.__dict__ for therapy in therapies], "Patients": [patient.__dict__ for patient in printable_patients]}, outfile)
     outfile.close()
 
-def import_dataset():
+def import_dataset(file):
     conditions = []
     therapies = []
     patients = []
     patient_conditions = []
     patient_therapies = []
-    with open('dataset.json', 'r') as json_file:
+    with open(file, 'r') as json_file:
         data = json.load(json_file)
         for condition in data["Conditions"]:
             obj = json.loads(json.dumps(condition), object_hook=lambda d: Condition(**d))
@@ -101,12 +100,6 @@ def import_dataset():
             patients.append(p)
     json_file.close()
     return conditions, therapies, patients
-
-""" def generate_printable_patients(patients):
-    printable_patients = []
-    for patient in patients:
-        printable_patients.append(Patient(patient.id, patient.name, [condition.__dict__ for condition in patient.conditions], [trial.__dict__ for trial in patient.trials]))
-    return printable_patients """
     
 if __name__ == "__main__":
     """ 
@@ -114,12 +107,15 @@ if __name__ == "__main__":
     Input 2: A specific patient p[q'], his/her conditions, the ordered list of trials he/she has done for each of these conditions (i.e, his/her medical history). 
     Input 3: A condition c[q]
     Output: A therapy th[ans]
+
+    This means that to run the program you need to provide 3 arguments: 
+    The dataset, The patient id, The condition id
+    > code.py dataset.json JohnID headacheID 
+    output: Recommended Therapy for the patient with id JohnID for the condition with id headacheID
     """
     conditions, therapies, patients = load_demo_patients()
     export_demo_dataset("dataset.json", conditions, therapies, patients)
-    conditions, therapies, patients = import_dataset()
-    #patients = generate_printable_patients(patients)
-    #print([condition.__dict__ for condition in conditions])
+    conditions, therapies, patients = import_dataset("dataset.json")
     export_dataset("dataset_new.json", conditions, therapies, patients)
 
 
