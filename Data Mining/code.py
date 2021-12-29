@@ -111,7 +111,9 @@ def generate_condtions(soucre_file):
             cond = condition.split(' ')
             if len(cond) > 1:
                 c = Condition("Cond" + str(i), condition, cond[len(cond) - 1])
-                values.append(c)
+            else:
+                c = Condition("Cond" + str(i), condition, cond[0])
+            values.append(c)
             i += 1
     conditions.close()
     return values
@@ -122,9 +124,8 @@ def generate_therapies(soucre_file):
         i = 0
         for therapy in conditions.read().split("\n"):
             the = therapy.split(' ')
-            if len(the) > 1:
-                t = Therapy("Th" + str(i), therapy, the[0])
-                values.append(t)
+            t = Therapy("Th" + str(i), therapy, the[0])
+            values.append(t)
             i += 1
     conditions.close()
     return values
@@ -195,7 +196,7 @@ if __name__ == "__main__":
     conditions, therapies, patients = import_dataset("dataset.json")
     #export_dataset("dataset_new.json", conditions, therapies, patients)
 
-    #conditions = generate_condtions("source_data/conditions.txt")
-    #therapies = generate_therapies("source_data/therapies.txt")
-    #patients = generate_patients("source_data/names.txt", conditions, therapies)
+    conditions = generate_condtions("source_data/conditions.txt")
+    therapies = generate_therapies("source_data/therapies.txt")
+    patients = generate_patients("source_data/names.txt", conditions, therapies)
     export_dataset("dataset_new.json", conditions, therapies, patients)
