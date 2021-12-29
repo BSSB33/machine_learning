@@ -190,14 +190,12 @@ if __name__ == "__main__":
     > code.py dataset.json JohnID headacheID 
     output: Recommended Therapy for the patient with id JohnID for the condition with id headacheID
     """
-    conditions, therapies, patients = load_demo_patients()
-    export_demo_dataset("dataset.json", conditions, therapies, patients)
+    #conditions, therapies, patients = load_demo_patients()
+    #export_demo_dataset("dataset.json", conditions, therapies, patients)
     conditions, therapies, patients = import_dataset("dataset.json")
-    export_dataset("dataset_new.json", conditions, therapies, patients)
+    #export_dataset("dataset_new.json", conditions, therapies, patients)
 
-    conditions = generate_condtions("source_data/conditions.txt")
-    therapies = generate_therapies("source_data/therapies.txt")
-    patients = generate_patients("source_data/names.txt", conditions, therapies)
+    #conditions = generate_condtions("source_data/conditions.txt")
+    #therapies = generate_therapies("source_data/therapies.txt")
+    #patients = generate_patients("source_data/names.txt", conditions, therapies)
     export_dataset("dataset_new.json", conditions, therapies, patients)
-
- 
