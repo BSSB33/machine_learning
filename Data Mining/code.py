@@ -130,15 +130,19 @@ def generate_therapies(soucre_file):
     conditions.close()
     return values
 
-def get_random_dates_with_interval(beginning=20000101):
+def get_random_dates_with_interval(beginning=20000101, fixed_start_date=False):
     date = datetime.datetime.strptime(str(beginning), "%Y%m%d")
-    start_date = datetime.date(randint(date.year, 2021), randint(date.month, 12), randint(date.day, 28))
+    if fixed_start_date:
+        start_date = datetime.date(date.year, date.month, date.day)
+    else:
+        start_date = datetime.date(randint(date.year, 2021), randint(date.month, 12), randint(date.day, 28))
     end_date = datetime.date(2021, 12, 31)
     random_days = randint(0, (end_date - start_date).days)
     random_date = start_date + datetime.timedelta(days = random_days)
     return start_date.strftime("%Y%m%d"), random_date.strftime("%Y%m%d")
 
-def get_random_condition(conditions):
+def get_random_condition(conditions, threated_conditions = []):
+    conditions = [condition for condition in conditions if condition not in threated_conditions]
     return conditions[randint(0, len(conditions) - 1)]
 
 def get_random_therapy(therapies):
@@ -151,8 +155,8 @@ def generate_patients(source_file, conditions, therapies):
     with open(source_file, 'r') as patient_names:
         i = 0
         for name in patient_names.read().split("\n"):
-            n_patient_condition = randint(1, 5)
-            n_patient_therapy = randint(1, 5)
+            n_patient_condition = randint(1, 3)
+            n_patient_therapy = randint(1, n_patient_condition)
             patient_conditions = []
             patient_therapies = []
             for j in range(n_patient_condition):
@@ -161,18 +165,33 @@ def generate_patients(source_file, conditions, therapies):
                 patient_conditions.append(p_c)
                 condition_id_counter += 1
 
+            #TODO Come up with 3 test cases.
+            threated_conditions = []
             for k in range(n_patient_therapy):
-                condition = get_random_condition(patient_conditions)
+                condition = get_random_condition(patient_conditions, threated_conditions)
+                threated_conditions.append(condition)
+
+                #Generate therapies maximum 3 times until the condition is cured
                 start_date_of_condition = condition.__dict__["diagnosed"]
-                start_date, end_date = get_random_dates_with_interval(start_date_of_condition)
-                p_t = Patient_therapy("tr" + str(therapy_id_counter), start_date_of_condition, end_date, condition.__dict__["id"], get_random_therapy(therapies).__dict__["id"], randint(0, 100))
-                #If Therapy Worked (<70%), cure the condition
-                if p_t.__dict__["successful"] >= 75:
-                    for cond in patient_conditions:
-                        if cond.__dict__["id"] == p_t.__dict__["condition"]:
-                            cond.__dict__["cured"] = p_t.__dict__["end"]
-                patient_therapies.append(p_t)
-                therapy_id_counter += 1
+                start_date, end_date = get_random_dates_with_interval(start_date_of_condition, True)
+
+                same_condition_counter = 0
+                max_number_of_therapies_per_condition = randint(1, 3)
+                while condition.__dict__["cured"] == None:
+                    p_t = Patient_therapy("tr" + str(therapy_id_counter), start_date, end_date, condition.__dict__["id"], get_random_therapy(therapies).__dict__["id"], randint(0, 100))
+                    #If Therapy Worked (<75%), cure the condition
+                    if p_t.__dict__["successful"] >= 75:
+                        for cond in patient_conditions:
+                            if cond.__dict__["id"] == p_t.__dict__["condition"]:
+                                cond.__dict__["cured"] = p_t.__dict__["end"]
+                    patient_therapies.append(p_t)
+                    therapy_id_counter += 1
+                    same_condition_counter += 1
+                    start_date, end_date = get_random_dates_with_interval(end_date, True)
+                    # Break if the condition is cured or the maximum number of therapies per condition is reached
+                    if same_condition_counter == max_number_of_therapies_per_condition:
+                        break
+                    
             p = Patient(i, name, patient_conditions, patient_therapies)
             values.append(p)
             i += 1
