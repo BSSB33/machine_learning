@@ -152,7 +152,7 @@ def generate_patients(source_file, conditions, therapies):
     values = []
     condition_id_counter = 0
     therapy_id_counter = 0
-    with open(source_file, 'r') as patient_names:
+    with open(source_file, 'r', encoding="utf-8") as patient_names:
         i = 0
         for name in patient_names.read().split("\n"):
             n_patient_condition = randint(1, 3)
@@ -201,7 +201,7 @@ def generate_patients(source_file, conditions, therapies):
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
-    Input 2: A specific patient p[q'], his/her conditions, the ordered list of trials he/she has done for each of these conditions (i.e, his/her medical history). 
+    Input 2: A specific patient P[q'], his/her conditions, the ordered list of trials he/she has done for each of these conditions (i.e, his/her medical history). 
     Input 3: A condition c[q]
     Output: A therapy th[ans]
 
@@ -212,10 +212,22 @@ if __name__ == "__main__":
     """
     #conditions, therapies, patients = load_demo_patients()
     #export_demo_dataset("dataset.json", conditions, therapies, patients)
-    conditions, therapies, patients = import_dataset("dataset.json")
+    #conditions, therapies, patients = import_dataset("dataset.json")
     #export_dataset("dataset_new.json", conditions, therapies, patients)
 
-    conditions = generate_condtions("source_data/conditions.txt")
-    therapies = generate_therapies("source_data/therapies.txt")
-    patients = generate_patients("source_data/names.txt", conditions, therapies)
-    export_dataset("dataset_new.json", conditions, therapies, patients)
+    #conditions = generate_condtions("source_data/conditions.txt")
+    #therapies = generate_therapies("source_data/therapies.txt")
+    #patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
+    #export_dataset("dataset_new.json", conditions, therapies, patients)
+
+
+    #conditions, therapies, patients = import_dataset("dataset.json")
+
+    #TODO
+    # Check parameters
+    # Check if patient exists
+    # Check if condition exists
+    # Check if patient has condition
+    # Check if patient has therapy
+    # Check if patient has therapy for condition
+    # Check if patient has therapy for condition with end date

@@ -1,11 +1,11 @@
 import random
 
 array = set()
-f = open('names.txt', "r")
+f = open('names_lot.txt', "r", encoding="utf-8")
 array = [name for name in f.read().split("\n")]
 
 randomlist = []
-for i in range(0, 100):
+for i in range(0, 1000):
     n = random.randint(0, len(array))
     randomlist.append(n)
 
