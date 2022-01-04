@@ -1,6 +1,7 @@
 from random import randint
 import json
 import datetime
+import sys
 
 class Condition:
     def __init__(self, id, name, type):
@@ -38,7 +39,6 @@ class Patient:
         self.name = name
         self.conditions = conditions
         self.trials = trials
-
 
 def load_demo_patients():
     c1 = Condition("Cond1", "High Blood Pressure", "Blood Pressure")
@@ -165,7 +165,6 @@ def generate_patients(source_file, conditions, therapies):
                 patient_conditions.append(p_c)
                 condition_id_counter += 1
 
-            #TODO Come up with 3 test cases.
             threated_conditions = []
             for k in range(n_patient_therapy):
                 condition = get_random_condition(patient_conditions, threated_conditions)
@@ -179,6 +178,7 @@ def generate_patients(source_file, conditions, therapies):
                 max_number_of_therapies_per_condition = randint(1, 3)
                 while condition.__dict__["cured"] == None:
                     p_t = Patient_therapy("tr" + str(therapy_id_counter), start_date, end_date, condition.__dict__["id"], get_random_therapy(therapies).__dict__["id"], randint(0, 100))
+
                     #If Therapy Worked (<75%), cure the condition
                     if p_t.__dict__["successful"] >= 75:
                         for cond in patient_conditions:
@@ -188,15 +188,58 @@ def generate_patients(source_file, conditions, therapies):
                     therapy_id_counter += 1
                     same_condition_counter += 1
                     start_date, end_date = get_random_dates_with_interval(end_date, True)
+
                     # Break if the condition is cured or the maximum number of therapies per condition is reached
-                    if same_condition_counter == max_number_of_therapies_per_condition:
-                        break
+                    if same_condition_counter == max_number_of_therapies_per_condition: break
                     
-            p = Patient(i, name, patient_conditions, patient_therapies)
+            p = Patient(i, name.capitalize(), patient_conditions, patient_therapies)
             values.append(p)
             i += 1
     patient_names.close()
     return values
+
+def find_condition_by_id(conditions, id):
+    for condition in conditions:
+        if condition.__dict__["id"] == id:
+            return condition
+
+def find_condition_by_kind(conditions, id):
+    for condition in conditions:
+        if condition.__dict__["kind"] == id:
+            return condition
+
+def check_if_condition_was_attempoted_to_cure(patient_therapies, condition_id):
+    for patient_therapy in patient_therapies:
+        if patient_therapy.__dict__["condition"] == condition_id:
+            return True
+    return False
+
+def patient_analysis(patient, condtion):
+
+    condtion = condtion.__dict__
+    patient_conditions = patient.__dict__["conditions"]
+    patient_therapies = patient.__dict__["trials"]
+    patient_conditions_kinds = [condition.__dict__["kind"] for condition in patient_conditions]
+    patient_therapy_ids = [therapy.__dict__["therapy"] for therapy in patient_therapies]
+
+    print("==== Patient Analysis ====")
+    print("Name: " + patient.__dict__["name"] + " (id: " + str(patient.__dict__["id"]) + ")\n")
+    print("Conditions of the Patient: ")
+    for p_c in patient_conditions:
+        print(p_c.__dict__["kind"] + " | Cured? -> " + str(p_c.__dict__["cured"] != None))
+    print("\nTherapies of the Patient: ")
+    print(patient_therapy_ids)
+    print("\nRequested condition: " + condtion["name"] + " (id: " + condtion["id"] + ")" + " | Type: " + condtion["type"])
+
+    # Check if patient has condition
+    patient_has_condition = condtion["id"] in patient_conditions_kinds
+    print("\nDoes the patient have condition (" + condtion["id"] + ")? -> " + str(patient_has_condition))
+
+    # Check if condition is cured
+    patient_has_condition_already_cured = find_condition_by_kind(patient_conditions, condtion["id"]).__dict__["cured"] != None
+    print("\nIs condition (" + condtion["id"] + ") already cured? -> " + str(patient_has_condition_already_cured))
+    
+    print("==========================")
 
 if __name__ == "__main__":
     """ 
@@ -209,10 +252,11 @@ if __name__ == "__main__":
     The dataset, The patient id, The condition id
     > code.py dataset.json JohnID headacheID 
     output: Recommended Therapy for the patient with id JohnID for the condition with id headacheID
+            The output of the program will be an ordered list of 5 recommended therapies
     """
     #conditions, therapies, patients = load_demo_patients()
     #export_demo_dataset("dataset.json", conditions, therapies, patients)
-    #conditions, therapies, patients = import_dataset("dataset.json")
+    #conditions, therapies, patients = import_dataset("dataset_new.json")
     #export_dataset("dataset_new.json", conditions, therapies, patients)
 
     #conditions = generate_condtions("source_data/conditions.txt")
@@ -220,14 +264,44 @@ if __name__ == "__main__":
     #patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
     #export_dataset("dataset_new.json", conditions, therapies, patients)
 
-
-    #conditions, therapies, patients = import_dataset("dataset.json")
-
     #TODO
-    # Check parameters
+    # Check number of parameters
+    if len(sys.argv) != 4:
+        print("Usage: \"py code.py dataset.json JohnID headacheID\"")
+        sys.exit()
+
+    # Import dataset
+    conditions, therapies, patients = import_dataset(sys.argv[1])
+    patient_id = sys.argv[2]
+    condition_id = sys.argv[3]
+
     # Check if patient exists
+    if patients[int(patient_id)] == None:
+        print("Patient with id " + patient_id + " does not exist.")
+        sys.exit()
+
     # Check if condition exists
-    # Check if patient has condition
+    if find_condition_by_id(conditions, condition_id) == None:
+        print("Condition with id " + condition_id + " does not exist.")
+        sys.exit()
+    
+    patient = patients[int(patient_id)]
+    condition = find_condition_by_id(conditions, condition_id)
+    
+    # Patient Analysis (Optional)
+    patient_analysis(patient, condition)
+
+
+    
     # Check if patient has therapy
     # Check if patient has therapy for condition
     # Check if patient has therapy for condition with end date
+
+    # Train a model based on how each therapy helped on different conditions
+    # Train a model based on how each therapy helped on different conditions considering the previous thrials of each patient
+
+    # Predict the best 5 therapies for a patient
+    
+
+    
+
