@@ -1,7 +1,13 @@
 from random import randint
+from sklearn.cluster import KMeans
+from sklearn.neighbors import KNeighborsClassifier
+
+import numpy as np
 import json
 import datetime
 import sys
+import re
+import pandas as pd
 
 class Condition:
     def __init__(self, id, name, type):
@@ -215,7 +221,6 @@ def check_if_condition_was_attempoted_to_cure(patient_therapies, condition_id):
     return False
 
 def patient_analysis(patient, condtion):
-
     condtion = condtion.__dict__
     patient_conditions = patient.__dict__["conditions"]
     patient_therapies = patient.__dict__["trials"]
@@ -241,6 +246,132 @@ def patient_analysis(patient, condtion):
     
     print("==========================")
 
+def print_patients(patients):
+    for patient in patients:
+        print(patient.__dict__["name"] + " (id: " + str(patient.__dict__["id"]) + ")")
+
+def cosine_sim(v1, v2):
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+
+def find_patients_by_condition(patients, condition):
+    patients_by_condition = []
+    for patient in patients:
+        for patient_condition in patient.__dict__["conditions"]:
+            if patient_condition.__dict__["kind"] == condition.__dict__["id"]:
+                patients_by_condition.append(patient)
+    return patients_by_condition
+
+def find_patient_by_id(patients, id):
+    for patient in patients:
+        if patient.__dict__["id"] == id:
+            return patient
+
+# Resolve condition id by secondary key of therapy
+def get_condition_by_trial_condition_id(patient, trial_condition_id):
+    for patient_therapies in patient.__dict__["trials"]:
+        if patient_therapies.__dict__["condition"] == trial_condition_id:
+            for patient_condition in patient.__dict__["conditions"]:
+                if patient_condition.__dict__["id"] == patient_therapies.__dict__["condition"]:
+                    return patient_condition.__dict__["kind"]
+
+# Find patients who were threated with the same therapies
+def find_similar_patients2(patients_with_similar_conditions, selected_patient, condition):
+    # TODO Find patients who were threated with the same therapies with Clustering or LSH
+    trials = []
+    patient_trials = [trial.__dict__["therapy"] for trial in selected_patient.__dict__["trials"]]
+    for patient in patients_with_similar_conditions:
+        if patient.__dict__["id"] != selected_patient.__dict__["id"]:
+            for trial in patient.__dict__["trials"]:
+                trials.append(trial.__dict__["therapy"])
+    print("\nNumber of patients with similar conditions: " + str(len(patients_with_similar_conditions) - 1))
+    print("Therapies were used on these patients: " + str(len(trials)))
+
+    # One Hot Encoding
+    dummies = pd.DataFrame(trials)
+    patient_dummies = pd.DataFrame(patient_trials)
+
+    dummies_len = len(dummies)
+    X = pd.concat([dummies, patient_dummies])
+    X = pd.get_dummies(X)
+    dummies = X[:dummies_len]
+    patient_dummies = X[dummies_len:]
+    # print(dummies.values)
+    # print(patient_dummies.values)
+
+    # Get Closest Patient with KMeans
+    # kmeans = KMeans(n_clusters=2, random_state=0).fit(dummies)
+    # closest_patient_id = kmeans.predict(patient_dummies)
+    # print(closest_patient_id)
+    # closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
+    # if closest_patient != None:
+    #    print("\nClosest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
+    
+    # Get Closest Patient with KNN
+    knn = KNeighborsClassifier(n_neighbors=1)
+    knn.fit(dummies, np.array(range(len(trials))))
+    closest_patient_id = knn.predict(patient_dummies)[0]
+    closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
+    if closest_patient != None:
+        print("Closest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
+    
+    # # Get Closest Patient with LSH
+    # lshf = LSHForest()
+    # lshf.fit(dummies)
+    # closest_patient_id = lshf.kneighbors(patient_dummies, n_neighbors=1)[1][0][0]
+    # closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
+    #if closest_patient != None:
+    #    print("Closest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
+    
+    # # Get Closest Patient with Cosine Similarity
+    # cosine_sim_result = cosine_sim(dummies, patient_dummies)
+    # closest_patient_id = np.argmax(cosine_sim_result)
+    # closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
+    # if closest_patient != None:
+    #    print("Closest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
+
+    print("==========================")
+
+def find_similar_patients(patients_with_similar_conditions, patient, condition):
+    similar_patients = []
+    for p in patients_with_similar_conditions:
+        if p.__dict__["id"] != patient.__dict__["id"]:
+            same_therapies = 0
+            for therapy in patient.__dict__["trials"]:
+                for p_therapy in p.__dict__["trials"]:
+                    if therapy.__dict__["therapy"] == p_therapy.__dict__["therapy"]:
+                        if condition.__dict__["id"] == get_condition_by_trial_condition_id(p, p_therapy.__dict__["condition"]):
+                            same_therapies += 1
+            if same_therapies >= len(patient.__dict__["trials"]): 
+                similar_patients.append(p)
+    return similar_patients
+
+def get_all_applied_therapies(patients):
+    therapies = set()
+    for patient in patients:
+        for trial in patient.__dict__["trials"]:
+            therapies.add(trial.__dict__["therapy"])
+    return sorted(therapies)
+
+def get_success_rate_of_therapy(patient, therapy):
+    for trial in patient.__dict__["trials"]:
+        if trial.__dict__["therapy"] == therapy:
+            return trial.__dict__["successful"]
+
+def generate_vectors(patients):
+    vectors = []
+    therapy_ids = get_all_applied_therapies(patients)
+
+    for patient in patients:
+        vector = []
+        for therapy_id in therapy_ids:
+            if therapy_id in [th.__dict__["therapy"] for th in patient.__dict__["trials"]]:
+                vector.append(get_success_rate_of_therapy(patient, therapy_id))
+            else:
+                vector.append(None)
+        vectors.append(vector)
+
+    return pd.DataFrame(vectors, columns=therapy_ids)
+
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -264,7 +395,6 @@ if __name__ == "__main__":
     #patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
     #export_dataset("dataset_new.json", conditions, therapies, patients)
 
-    #TODO
     # Check number of parameters
     if len(sys.argv) != 4:
         print("Usage: \"py code.py dataset.json JohnID headacheID\"")
@@ -287,21 +417,21 @@ if __name__ == "__main__":
     
     patient = patients[int(patient_id)]
     condition = find_condition_by_id(conditions, condition_id)
+    # TODO If Requested Patient doesn't have the given condition then write it to the screen and add the condition as newly diagnosed condition
     
     # Patient Analysis (Optional)
-    patient_analysis(patient, condition)
+    #patient_analysis(patient, condition)
+
+    patients_with_condition = find_patients_by_condition(patients, condition)
+    #print_patients(patients_with_condition)
+
+    similar_patients = find_similar_patients(patients_with_condition, patient, condition)
+    #print_patients(similar_patients)
+
+    df = generate_vectors(similar_patients)
+    print(df)
+
+    # One Hot Encode "therapy" of each patient trial (Link them to patient?) -> CLuster
 
 
-    
-    # Check if patient has therapy
-    # Check if patient has therapy for condition
-    # Check if patient has therapy for condition with end date
-
-    # Train a model based on how each therapy helped on different conditions
-    # Train a model based on how each therapy helped on different conditions considering the previous thrials of each patient
-
-    # Predict the best 5 therapies for a patient
-    
-
-    
-
+    # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
