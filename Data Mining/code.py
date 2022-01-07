@@ -213,6 +213,7 @@ def find_condition_by_kind(conditions, id):
     for condition in conditions:
         if condition.__dict__["kind"] == id:
             return condition
+    return None
 
 def check_if_condition_was_attempoted_to_cure(patient_therapies, condition_id):
     for patient_therapy in patient_therapies:
@@ -241,10 +242,12 @@ def patient_analysis(patient, condtion):
     print("\nDoes the patient have condition (" + condtion["id"] + ")? -> " + str(patient_has_condition))
 
     # Check if condition is cured
-    patient_has_condition_already_cured = find_condition_by_kind(patient_conditions, condtion["id"]).__dict__["cured"] != None
-    print("\nIs condition (" + condtion["id"] + ") already cured? -> " + str(patient_has_condition_already_cured))
+    condition_by_kind = find_condition_by_kind(patient_conditions, condtion["id"])
+    if condition_by_kind != None:
+        patient_has_condition_already_cured = condition_by_kind.__dict__["cured"] != None
+        print("\nIs condition (" + condtion["id"] + ") already cured? -> " + str(patient_has_condition_already_cured))
     
-    print("==========================")
+    print("==========================\n")
 
 def print_patients(patients):
     for patient in patients:
@@ -372,6 +375,15 @@ def generate_vectors(patients):
 
     return pd.DataFrame(vectors, columns=therapy_ids)
 
+def get_biggest_patient_condition_id(patients):
+    biggest_condition_id = 0
+    for patient in patients:
+        for condition in patient.__dict__["conditions"]:
+            id_num = re.sub('\D', '', condition.__dict__["id"])
+            if int(id_num) > biggest_condition_id:
+                biggest_condition_id = int(id_num)
+    return biggest_condition_id
+
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -417,11 +429,17 @@ if __name__ == "__main__":
     
     patient = patients[int(patient_id)]
     condition = find_condition_by_id(conditions, condition_id)
-    # TODO If Requested Patient doesn't have the given condition then write it to the screen and add the condition as newly diagnosed condition
-    
+
     # Patient Analysis (Optional)
     #patient_analysis(patient, condition)
 
+    # If Requested Patient doesn't have the given condition then write it to the screen and add the condition as newly diagnosed condition
+    if condition_id not in [cond.__dict__["kind"] for cond in patient.__dict__["conditions"]]:
+        start_date, end_date = get_random_dates_with_interval()
+        p_c = Patient_condition("pc" + str(get_biggest_patient_condition_id(patients)), start_date, end_date, condition_id)
+        patient.__dict__["conditions"] = patient.__dict__["conditions"] + [p_c]
+        print("\nPatient with id " + patient_id + " has newly diagnosed condition: " + condition.__dict__["name"] + " (id: " + str(condition.__dict__["id"]) + ")")
+    
     patients_with_condition = find_patients_by_condition(patients, condition)
     #print_patients(patients_with_condition)
 
@@ -430,8 +448,5 @@ if __name__ == "__main__":
 
     df = generate_vectors(similar_patients)
     print(df)
-
-    # One Hot Encode "therapy" of each patient trial (Link them to patient?) -> CLuster
-
 
     # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
