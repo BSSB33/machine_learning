@@ -253,9 +253,6 @@ def print_patients(patients):
     for patient in patients:
         print(patient.__dict__["name"] + " (id: " + str(patient.__dict__["id"]) + ")")
 
-def cosine_sim(v1, v2):
-    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-
 def find_patients_by_condition(patients, condition):
     patients_by_condition = []
     for patient in patients:
@@ -384,6 +381,9 @@ def get_biggest_patient_condition_id(patients):
                 biggest_condition_id = int(id_num)
     return biggest_condition_id
 
+def cosine_sim(v1, v2):
+    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -443,10 +443,17 @@ if __name__ == "__main__":
     patients_with_condition = find_patients_by_condition(patients, condition)
     #print_patients(patients_with_condition)
 
-    similar_patients = find_similar_patients(patients_with_condition, patient, condition)
+    #similar_patients = find_similar_patients(patients_with_condition, patient, condition)
     #print_patients(similar_patients)
 
-    df = generate_vectors(similar_patients)
+    df = generate_vectors(patients_with_condition)
+    
+    # Normalize Scores by subtracting row means
+    df = df.apply(lambda x: x - df.mean(axis = 1))
+
     print(df)
+    
+
+
 
     # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
