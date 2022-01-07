@@ -274,77 +274,6 @@ def get_condition_by_trial_condition_id(patient, trial_condition_id):
                 if patient_condition.__dict__["id"] == patient_therapies.__dict__["condition"]:
                     return patient_condition.__dict__["kind"]
 
-# Find patients who were threated with the same therapies
-def find_similar_patients2(patients_with_similar_conditions, selected_patient, condition):
-    # TODO Find patients who were threated with the same therapies with Clustering or LSH
-    trials = []
-    patient_trials = [trial.__dict__["therapy"] for trial in selected_patient.__dict__["trials"]]
-    for patient in patients_with_similar_conditions:
-        if patient.__dict__["id"] != selected_patient.__dict__["id"]:
-            for trial in patient.__dict__["trials"]:
-                trials.append(trial.__dict__["therapy"])
-    print("\nNumber of patients with similar conditions: " + str(len(patients_with_similar_conditions) - 1))
-    print("Therapies were used on these patients: " + str(len(trials)))
-
-    # One Hot Encoding
-    dummies = pd.DataFrame(trials)
-    patient_dummies = pd.DataFrame(patient_trials)
-
-    dummies_len = len(dummies)
-    X = pd.concat([dummies, patient_dummies])
-    X = pd.get_dummies(X)
-    dummies = X[:dummies_len]
-    patient_dummies = X[dummies_len:]
-    # print(dummies.values)
-    # print(patient_dummies.values)
-
-    # Get Closest Patient with KMeans
-    # kmeans = KMeans(n_clusters=2, random_state=0).fit(dummies)
-    # closest_patient_id = kmeans.predict(patient_dummies)
-    # print(closest_patient_id)
-    # closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
-    # if closest_patient != None:
-    #    print("\nClosest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
-    
-    # Get Closest Patient with KNN
-    knn = KNeighborsClassifier(n_neighbors=1)
-    knn.fit(dummies, np.array(range(len(trials))))
-    closest_patient_id = knn.predict(patient_dummies)[0]
-    closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
-    if closest_patient != None:
-        print("Closest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
-    
-    # # Get Closest Patient with LSH
-    # lshf = LSHForest()
-    # lshf.fit(dummies)
-    # closest_patient_id = lshf.kneighbors(patient_dummies, n_neighbors=1)[1][0][0]
-    # closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
-    #if closest_patient != None:
-    #    print("Closest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
-    
-    # # Get Closest Patient with Cosine Similarity
-    # cosine_sim_result = cosine_sim(dummies, patient_dummies)
-    # closest_patient_id = np.argmax(cosine_sim_result)
-    # closest_patient = find_patient_by_id(patients_with_similar_conditions, closest_patient_id)
-    # if closest_patient != None:
-    #    print("Closest patient with same therapies: " + closest_patient.__dict__["name"] + " (id: " + str(closest_patient.__dict__["id"]) + ")")
-
-    print("==========================")
-
-def find_similar_patients(patients_with_similar_conditions, patient, condition):
-    similar_patients = []
-    for p in patients_with_similar_conditions:
-        if p.__dict__["id"] != patient.__dict__["id"]:
-            same_therapies = 0
-            for therapy in patient.__dict__["trials"]:
-                for p_therapy in p.__dict__["trials"]:
-                    if therapy.__dict__["therapy"] == p_therapy.__dict__["therapy"]:
-                        if condition.__dict__["id"] == get_condition_by_trial_condition_id(p, p_therapy.__dict__["condition"]):
-                            same_therapies += 1
-            if same_therapies >= len(patient.__dict__["trials"]): 
-                similar_patients.append(p)
-    return similar_patients
-
 def get_all_applied_therapies(patients):
     therapies = set()
     for patient in patients:
@@ -359,18 +288,21 @@ def get_success_rate_of_therapy(patient, therapy):
 
 def generate_vectors(patients):
     vectors = []
-    therapy_ids = get_all_applied_therapies(patients)
+    therapy_ids = get_all_applied_therapies(patients)  
 
     for patient in patients:
         vector = []
         for therapy_id in therapy_ids:
             if therapy_id in [th.__dict__["therapy"] for th in patient.__dict__["trials"]]:
                 vector.append(get_success_rate_of_therapy(patient, therapy_id))
-            else:
-                vector.append(None)
+            else: vector.append(None)
+        vector.append(patient.__dict__["id"])
         vectors.append(vector)
 
-    return pd.DataFrame(vectors, columns=therapy_ids)
+    therapy_ids.append("ids")
+    df = pd.DataFrame(vectors, columns=therapy_ids)
+    df.set_index('ids', inplace=True)
+    return df
 
 def get_biggest_patient_condition_id(patients):
     biggest_condition_id = 0
@@ -384,6 +316,15 @@ def get_biggest_patient_condition_id(patients):
 def cosine_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
     
+def get_most_similar_patietns(n_patients, patient, patients):
+    patients_vectors = generate_vectors(patients)
+    patient_vector = patients_vectors.loc[patient.__dict__["id"]]
+    patients_vectors = patients_vectors.drop(patient.__dict__["id"])
+    similarities = []
+    for index, row in patients_vectors.iterrows():
+        similarities.append(cosine_sim(row, patient_vector))
+    return patients_vectors.index[np.argsort(similarities)[::-1]][:n_patients]
+
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -450,10 +391,9 @@ if __name__ == "__main__":
     
     # Normalize Scores by subtracting row means
     df = df.apply(lambda x: x - df.mean(axis = 1))
-
     print(df)
-    
-
+    #similar_patients = get_most_similar_patietns(5, patient, patients_with_condition)
+    #print(similar_patients)
 
 
     # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
