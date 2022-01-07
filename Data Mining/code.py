@@ -257,7 +257,7 @@ def find_patients_by_condition(patients, condition):
     patients_by_condition = []
     for patient in patients:
         for patient_condition in patient.__dict__["conditions"]:
-            if patient_condition.__dict__["kind"] == condition.__dict__["id"]:
+            if patient_condition.__dict__["kind"] == condition.__dict__["id"] and patient_condition.__dict__["cured"] != None:
                 patients_by_condition.append(patient)
     return patients_by_condition
 
@@ -286,7 +286,7 @@ def get_success_rate_of_therapy(patient, therapy):
         if trial.__dict__["therapy"] == therapy:
             return trial.__dict__["successful"]
 
-def generate_vectors(patients):
+def generate_vectors(patients, norm_vectos=True):
     vectors = []
     therapy_ids = get_all_applied_therapies(patients)  
 
@@ -295,13 +295,17 @@ def generate_vectors(patients):
         for therapy_id in therapy_ids:
             if therapy_id in [th.__dict__["therapy"] for th in patient.__dict__["trials"]]:
                 vector.append(get_success_rate_of_therapy(patient, therapy_id))
-            else: vector.append(None)
+            else: vector.append(0)
         vector.append(patient.__dict__["id"])
         vectors.append(vector)
 
     therapy_ids.append("ids")
     df = pd.DataFrame(vectors, columns=therapy_ids)
     df.set_index('ids', inplace=True)
+
+    if norm_vectos:
+        # Normalize Scores by subtracting row means
+        df = df.apply(lambda x: x - df.mean(axis = 1))
     return df
 
 def get_biggest_patient_condition_id(patients):
@@ -315,16 +319,18 @@ def get_biggest_patient_condition_id(patients):
 
 def cosine_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-    
-def get_most_similar_patietns(n_patients, patient, patients):
+   
+def get_most_similar_patients(n_patients, patient, patients):
     patients_vectors = generate_vectors(patients)
     patient_vector = patients_vectors.loc[patient.__dict__["id"]]
     patients_vectors = patients_vectors.drop(patient.__dict__["id"])
-    similarities = []
-    for index, row in patients_vectors.iterrows():
-        similarities.append(cosine_sim(row, patient_vector))
-    return patients_vectors.index[np.argsort(similarities)[::-1]][:n_patients]
 
+    patient_similarity = []
+    for index, row in patients_vectors.iterrows():
+        patient_similarity.append(cosine_sim(row, patient_vector))
+
+    return patients_vectors.index[np.argsort(patient_similarity)[::-1]][:n_patients].to_list()
+    
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -384,16 +390,10 @@ if __name__ == "__main__":
     patients_with_condition = find_patients_by_condition(patients, condition)
     #print_patients(patients_with_condition)
 
-    #similar_patients = find_similar_patients(patients_with_condition, patient, condition)
-    #print_patients(similar_patients)
+    df = generate_vectors(patients_with_condition, True)
 
-    df = generate_vectors(patients_with_condition)
-    
-    # Normalize Scores by subtracting row means
-    df = df.apply(lambda x: x - df.mean(axis = 1))
-    print(df)
-    #similar_patients = get_most_similar_patietns(5, patient, patients_with_condition)
-    #print(similar_patients)
+    similar_patient_ids = get_most_similar_patients(5, patient, patients_with_condition)
+    print(similar_patient_ids)
 
 
     # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
