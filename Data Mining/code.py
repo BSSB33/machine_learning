@@ -1,4 +1,5 @@
 from random import randint
+from scipy.sparse.extract import find
 from sklearn.cluster import KMeans
 from sklearn.neighbors import KNeighborsClassifier
 
@@ -294,6 +295,7 @@ def generate_vectors(patients, norm_vectos=True):
         vector = []
         for therapy_id in therapy_ids:
             if therapy_id in [th.__dict__["therapy"] for th in patient.__dict__["trials"]]:
+                #TODO IF therapy is applied for the given condition
                 vector.append(get_success_rate_of_therapy(patient, therapy_id))
             else: vector.append(0)
         vector.append(patient.__dict__["id"])
@@ -315,7 +317,7 @@ def get_biggest_patient_condition_id(patients):
             id_num = re.sub('\D', '', condition.__dict__["id"])
             if int(id_num) > biggest_condition_id:
                 biggest_condition_id = int(id_num)
-    return biggest_condition_id
+    return biggest_condition_id + 1
 
 def cosine_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
@@ -329,8 +331,16 @@ def get_most_similar_patients(n_patients, patient, patients):
     for index, row in patients_vectors.iterrows():
         patient_similarity.append(cosine_sim(row, patient_vector))
 
-    return patients_vectors.index[np.argsort(patient_similarity)[::-1]][:n_patients].to_list()
+    ids =  patients_vectors.index[np.argsort(patient_similarity)[::-1]][:n_patients].to_list()
+    similar_patients = []
+    for id in ids:
+        similar_patients.append(find_patient_by_id(patients, id))
+    return similar_patients
     
+# def find_best_therapy():
+
+
+
 if __name__ == "__main__":
     """ 
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
@@ -387,13 +397,30 @@ if __name__ == "__main__":
         patient.__dict__["conditions"] = patient.__dict__["conditions"] + [p_c]
         print("\nPatient with id " + patient_id + " has newly diagnosed condition: " + condition.__dict__["name"] + " (id: " + str(condition.__dict__["id"]) + ")")
     
+    # Get all patients who has the given condition cured
     patients_with_condition = find_patients_by_condition(patients, condition)
-    #print_patients(patients_with_condition)
 
+    # Generate vectors for all patients
     df = generate_vectors(patients_with_condition, True)
 
-    similar_patient_ids = get_most_similar_patients(5, patient, patients_with_condition)
-    print(similar_patient_ids)
+    # Use the vectors to find the most similar patients
+    similar_patients = get_most_similar_patients(5, patient, patients_with_condition)
 
+    # Generate vectors from the 5 patients
+    similar_patients_vectors = generate_vectors(similar_patients + [patient], False)
+    print(similar_patients_vectors)
 
+    # For each therapy, predict the success rate of each therapies, and find the best one
+    #find_best_therapy()
+
+    # TODO
+    # BUG: If the patient doesn't have the given condition cured then the program will crash (example: py code.py dataset_50000.json 38805 Cond105)
+    #   - Check "if" where being cured is reqired
+    #   - Maybe, because of this, later when I would like to remove the patient from the "similar_patients", the program will crash as it is not in the list?
+    # !!! HUGE PROBLEM (BUG): There is no correlation between therapies and conditions, so the program will always recommend the same therapy for the patient for all the conditions!!!
+    # Check: If patient doenst have the condition and it is newly added at the beginning of the program (Done)
+    # Predict each therapy for our patient and find the best one
+    # Take outputs as examples for a step by step walkthrough of the program
+    # Add error handling in case of no similar patients
+    # Add error handling in case of no good therapies can be found
     # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
