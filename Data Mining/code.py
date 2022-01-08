@@ -283,24 +283,39 @@ def get_all_applied_therapies(patients):
             therapies.add(trial.__dict__["therapy"])
     return sorted(therapies)
 
-def get_success_rate_of_therapy(patient, therapy):
+def get_success_rate_of_therapy(patient, therapy, trial_needed = True):
     for trial in patient.__dict__["trials"]:
         if trial.__dict__["therapy"] == therapy:
-            return trial.__dict__["successful"], trial.__dict__["condition"]
+            if trial_needed:
+                return trial.__dict__["successful"], trial.__dict__["condition"]
+            else:
+                return trial.__dict__["successful"]
 
-def generate_vectors(patients, condition_id, norm_vectos=True):
+def is_zero_vector(vector):
+    for v in vector:
+        if v != 0:
+            return False
+    return True
+    
+def generate_vectors(patients, condition_id, patient_id, norm_vectos=True):
     vectors = []
     therapy_ids = get_all_applied_therapies(patients)  
 
     for patient in patients:
         vector = []
         for therapy_id in therapy_ids:
-            if therapy_id in [th.__dict__["therapy"] for th in patient.__dict__["trials"]]:
-                #TODO IF therapy is applied for the given condition
-                success_rate, trial_condition_id = get_success_rate_of_therapy(patient, therapy_id)
-                if get_condition_kind_by_trial_condition_id(patient, trial_condition_id) == condition_id:
+            if therapy_id in [th.__dict__["therapy"] for th in patient.__dict__["trials"]] or patient_id == patient.__dict__["id"]:
+                if patient_id == patient.__dict__["id"]:
+                    success_rate = get_success_rate_of_therapy(patient, therapy_id, False)
+                    if success_rate == None:
+                        success_rate = 0
                     vector.append(success_rate)
-                else: vector.append(0)
+                else:
+                    success_rate, trial_condition_id = get_success_rate_of_therapy(patient, therapy_id, True)
+                    # IF therapy is applied for the given condition
+                    if get_condition_kind_by_trial_condition_id(patient, trial_condition_id) == condition_id:
+                        vector.append(success_rate)
+                    else: vector.append(0)
             else: vector.append(0)
         vector.append(patient.__dict__["id"])
         vectors.append(vector)
@@ -327,23 +342,25 @@ def cosine_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
    
 def get_most_similar_patients(n_patients, patient, patients, condition_id):
-    patients_vectors = generate_vectors(patients, condition_id)
+    patients_vectors = generate_vectors(patients, condition_id, patient.__dict__["id"])
     patient_vector = patients_vectors.loc[patient.__dict__["id"]]
     patients_vectors = patients_vectors.drop(patient.__dict__["id"])
-
     patient_similarity = []
     for index, row in patients_vectors.iterrows():
-        patient_similarity.append(cosine_sim(row, patient_vector))
-
-    ids =  patients_vectors.index[np.argsort(patient_similarity)[::-1]][:n_patients].to_list()
+        if is_zero_vector(row):
+            patients_vectors = patients_vectors.drop(index)
+        else:
+            patient_similarity.append(cosine_sim(row, patient_vector))
+  
+    ids =  patients_vectors.index[np.argsort(patient_similarity)[::-1]][:n_patients].to_list() 
     similar_patients = []
+    #TODO do it inline
+    print(ids)
     for id in ids:
         similar_patients.append(find_patient_by_id(patients, id))
     return similar_patients
     
 # def find_best_therapy():
-
-
 
 if __name__ == "__main__":
     """ 
@@ -366,7 +383,7 @@ if __name__ == "__main__":
     #conditions = generate_condtions("source_data/conditions.txt")
     #therapies = generate_therapies("source_data/therapies.txt")
     #patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
-    #export_dataset("dataset_new.json", conditions, therapies, patients)
+    #export_dataset("dataset_50000.json", conditions, therapies, patients)
 
     # Check number of parameters
     if len(sys.argv) != 4:
@@ -404,32 +421,22 @@ if __name__ == "__main__":
     # Get all patients who has the given condition cured
     patients_with_condition = find_patients_by_condition(patients, condition)
     # Generate vectors for all patients
-    df = generate_vectors(patients_with_condition, condition_id, True)
+    df = generate_vectors(patients_with_condition, condition_id, patient.__dict__["id"], True)
 
     # Use the vectors to find the most similar patients
-    similar_patients = get_most_similar_patients(5, patient, patients_with_condition, condition_id)
-    #print_patients(similar_patients)
+    similar_patients = get_most_similar_patients(20, patient, patients_with_condition, condition_id)
+    # print_patients(similar_patients)
 
     # Generate vectors from the 5 patients
-    similar_patients_vectors = generate_vectors(similar_patients + [patient], condition_id, False) #TODO Remove "plus patient", its for testing only
+    similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
     print(similar_patients_vectors)
 
     # For each therapy, predict the success rate of each therapies, and find the best one
     #find_best_therapy()
 
-    # TODO s
-    # BUG: If the patient doesn't have the given condition cured then the program will crash (example: py code.py dataset_50000.json 38805 Cond105)
-    #   - Check "if" where being cured is reqired (Removed from "if") BUG?: py code.py dataset_50000.json 56 Cond185 -> Only has one column, why?
-    #   - Maybe, because of this, later when I would like to remove the patient from the "similar_patients", the program will crash as it is not in the list?
-    # SOLVED !!! HUGE PROBLEM (BUG): There is no correlation between therapies and conditions, so the program will always recommend the same therapy for the patient for all the conditions!!!
-    # - BUG: RuntimeWarning: invalid value encountered in double_scalars return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-    # NEW HUGE PROBLEM: PATIENTS ARE NOW SIMILAR AND RECOMMENDATION RATHER HAPPENS ON THE CONDITION ITSELF!
-    # Check: If patient doenst have the condition and it is newly added at the beginning of the program (Done)
+
+    # TODOs
     # Predict each therapy for our patient and find the best one
     # Take outputs as examples for a step by step walkthrough of the program
     # Add error handling in case of no similar patients
     # Add error handling in case of no good therapies can be found
-
-
-
-    # https://compgenomr.github.io/book/clustering-grouping-samples-based-on-their-similarity.html
