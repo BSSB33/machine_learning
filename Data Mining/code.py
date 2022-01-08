@@ -206,6 +206,12 @@ def generate_patients(source_file, conditions, therapies):
     patient_names.close()
     return values
 
+def generate_new_dataset(dataset_name):
+    conditions = generate_condtions("source_data/conditions.txt")
+    therapies = generate_therapies("source_data/therapies.txt")
+    patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
+    export_dataset(dataset_name, conditions, therapies, patients)
+
 def find_condition_by_id(conditions, id):
     for condition in conditions:
         if condition.__dict__["id"] == id:
@@ -368,13 +374,17 @@ def remove_vectors(df):
 def find_best_therapy(df):
     n_patients = df.shape[0]
     n_therapies = df.shape[1]
-    prediced_success_rate = []
+    recommendation_rates = []
     for i in range(n_therapies):
-        success_rate = (1 / n_patients) * df.iloc[:,i].sum()
-        prediced_success_rate.append(success_rate)
-    print(prediced_success_rate)
+        recommendation_rates.append((1 / n_patients) * df.iloc[:,i].sum())
 
-    return df.columns[np.argsort(prediced_success_rate)[::-1]][:5].to_list()
+    return df.columns[np.argsort(recommendation_rates)[::-1]][:5].to_list()
+
+def print_therapy_by_therapy_id(therapy_id):
+    for therapy in therapies:
+        if therapy.__dict__["id"] == therapy_id:
+            return "Therapy: (id: " + therapy.__dict__["id"] + ") " + therapy.__dict__["name"] + " - Type: " + therapy.__dict__["type"]
+    
 
 if __name__ == "__main__":
     """ 
@@ -389,15 +399,7 @@ if __name__ == "__main__":
     output: Recommended Therapy for the patient with id JohnID for the condition with id headacheID
             The output of the program will be an ordered list of 5 recommended therapies
     """
-    #conditions, therapies, patients = load_demo_patients()
-    #export_demo_dataset("dataset.json", conditions, therapies, patients)
-    #conditions, therapies, patients = import_dataset("dataset_new.json")
-    #export_dataset("dataset_new.json", conditions, therapies, patients)
-
-    #conditions = generate_condtions("source_data/conditions.txt")
-    #therapies = generate_therapies("source_data/therapies.txt")
-    #patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
-    #export_dataset("dataset_50000.json", conditions, therapies, patients)
+    #generate_new_dataset("dataset_new.json")
 
     # Check number of parameters
     if len(sys.argv) != 4:
@@ -450,9 +452,16 @@ if __name__ == "__main__":
 
     # For each therapy, predict the success rate of each therapies, and find the best ones
     best_therapies = find_best_therapy(similar_patients_vectors)
-    print(best_therapies)
+    #print(best_therapies)
+
+    print("\nRecommended therapies for patient with id " + patient_id + " for condition with id " + condition_id + ":")
+    for i in range(0, len(best_therapies)):
+        print(str(i + 1) + ". " + print_therapy_by_therapy_id(best_therapies[i]))
 
     # TODOs
+    # Check and print only the max number of recommended therpaies found!!!
+    # Check if print if there is no recommended therapy found
+    # Check if recommendations are really good - Recommended users are really similar (Should be good)
     # Predict each therapy for our patient and find the best one
     # Take outputs as examples for a step by step walkthrough of the program
     # Add error handling in case of no similar patients
