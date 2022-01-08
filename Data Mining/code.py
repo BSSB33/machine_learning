@@ -364,7 +364,17 @@ def remove_vectors(df):
             df = df.drop(columnName, axis=1)
     return df
 
-# def find_best_therapy():
+# Find most recommended 5 therapies
+def find_best_therapy(df):
+    n_patients = df.shape[0]
+    n_therapies = df.shape[1]
+    prediced_success_rate = []
+    for i in range(n_therapies):
+        success_rate = (1 / n_patients) * df.iloc[:,i].sum()
+        prediced_success_rate.append(success_rate)
+    print(prediced_success_rate)
+
+    return df.columns[np.argsort(prediced_success_rate)[::-1]][:5].to_list()
 
 if __name__ == "__main__":
     """ 
@@ -433,14 +443,14 @@ if __name__ == "__main__":
 
     # Generate vectors from the 20 most similar patients patients
     similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
-    print(similar_patients_vectors)
+    #print(similar_patients_vectors)
 
     similar_patients_vectors = remove_vectors(similar_patients_vectors)
     print(similar_patients_vectors)
 
     # For each therapy, predict the success rate of each therapies, and find the best ones
-    #find_best_therapy()
-
+    best_therapies = find_best_therapy(similar_patients_vectors)
+    print(best_therapies)
 
     # TODOs
     # Predict each therapy for our patient and find the best one
