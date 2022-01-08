@@ -345,21 +345,25 @@ def get_most_similar_patients(n_patients, patient, patients, condition_id):
     patients_vectors = generate_vectors(patients, condition_id, patient.__dict__["id"])
     patient_vector = patients_vectors.loc[patient.__dict__["id"]]
     patients_vectors = patients_vectors.drop(patient.__dict__["id"])
-    patient_similarity = []
+
+    patient_similarities = []
     for index, row in patients_vectors.iterrows():
         if is_zero_vector(row):
             patients_vectors = patients_vectors.drop(index)
         else:
-            patient_similarity.append(cosine_sim(row, patient_vector))
+            patient_similarities.append(cosine_sim(row, patient_vector))
   
-    ids =  patients_vectors.index[np.argsort(patient_similarity)[::-1]][:n_patients].to_list() 
-    similar_patients = []
-    #TODO do it inline
-    print(ids)
-    for id in ids:
-        similar_patients.append(find_patient_by_id(patients, id))
-    return similar_patients
+    ids =  patients_vectors.index[np.argsort(patient_similarities)[::-1]][:n_patients].to_list() 
     
+    return [find_patient_by_id(patients, id) for id in ids]
+    
+# Remove vectors where all the values are 0 
+def remove_vectors(df):
+    for (columnName, columnData) in df.iteritems():
+        if is_zero_vector(columnData.values):
+            df = df.drop(columnName, axis=1)
+    return df
+
 # def find_best_therapy():
 
 if __name__ == "__main__":
@@ -427,11 +431,14 @@ if __name__ == "__main__":
     similar_patients = get_most_similar_patients(20, patient, patients_with_condition, condition_id)
     # print_patients(similar_patients)
 
-    # Generate vectors from the 5 patients
+    # Generate vectors from the 20 most similar patients patients
     similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
     print(similar_patients_vectors)
 
-    # For each therapy, predict the success rate of each therapies, and find the best one
+    similar_patients_vectors = remove_vectors(similar_patients_vectors)
+    print(similar_patients_vectors)
+
+    # For each therapy, predict the success rate of each therapies, and find the best ones
     #find_best_therapy()
 
 
