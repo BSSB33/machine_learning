@@ -99,13 +99,35 @@ def import_dataset(file):
             current_patient_conditions = []
             current_patient_therapies = []
             for patient_condition in patient["conditions"]:
-                obj = json.loads(json.dumps(patient_condition), object_hook=lambda d: Patient_condition(**d))
-                patient_conditions.append(obj)
-                current_patient_conditions.append(obj)
+                for attribute in patient_condition:
+                    if attribute == "id":
+                        id = patient_condition[attribute]
+                    if attribute == "diagnosed":
+                        diagnosed = patient_condition[attribute]
+                    if attribute == "cured":
+                        cured = patient_condition[attribute]
+                    if attribute == "kind":
+                        kind = patient_condition[attribute]
+                p_c = Patient_condition(id, diagnosed, cured, kind)
+                patient_conditions.append(p_c)
+                current_patient_conditions.append(p_c)
             for patient_therapy in patient["trials"]:
-                obj = json.loads(json.dumps(patient_therapy), object_hook=lambda d: Patient_therapy(**d))
-                patient_therapies.append(obj)
-                current_patient_therapies.append(obj)
+                for attribute in patient_therapy:
+                    if attribute == "id":
+                        id = patient_therapy[attribute]
+                    if attribute == "condition":
+                        condition = patient_therapy[attribute]
+                    if attribute == "end":
+                        end = patient_therapy[attribute]
+                    if attribute == "start":
+                        start = patient_therapy[attribute]
+                    if attribute == "therapy":
+                        therapy = patient_therapy[attribute]
+                    if attribute == "successful":
+                        successful = patient_therapy[attribute]
+                p_c = Patient_therapy(id, start, end, condition, therapy, successful)
+                patient_therapies.append(p_c)
+                current_patient_therapies.append(p_c)
             p = Patient(patient["id"], patient["name"], current_patient_conditions, current_patient_therapies)
             patients.append(p)
     json_file.close()
@@ -318,7 +340,7 @@ def generate_vectors(patients, condition_id, patient_id, norm_vectos=True):
                     vector.append(success_rate)
                 else:
                     success_rate, trial_condition_id = get_success_rate_of_therapy(patient, therapy_id, True)
-                    # IF therapy is applied for the given condition
+                    # Check if therapy is applied for the given condition
                     if get_condition_kind_by_trial_condition_id(patient, trial_condition_id) == condition_id:
                         vector.append(success_rate)
                     else: vector.append(0)
@@ -355,12 +377,12 @@ def get_most_similar_patients(n_patients, patient, patients, condition_id):
     patient_similarities = []
     for index, row in patients_vectors.iterrows():
         if is_zero_vector(row):
-            patients_vectors = patients_vectors.drop(index)
+            if index in patients_vectors.index:
+                patients_vectors = patients_vectors.drop(index)
         else:
             patient_similarities.append(cosine_sim(row, patient_vector))
   
     ids =  patients_vectors.index[np.argsort(patient_similarities)[::-1]][:n_patients].to_list() 
-    
     return [find_patient_by_id(patients, id) for id in ids]
     
 # Remove vectors where all the values are 0 
@@ -385,6 +407,10 @@ def print_therapy_by_therapy_id(therapy_id):
         if therapy.__dict__["id"] == therapy_id:
             return "Therapy: (id: " + therapy.__dict__["id"] + ") " + therapy.__dict__["name"] + " - Type: " + therapy.__dict__["type"]
     
+def print_recommended_therapies(best_therapies, patient_id, condition_id):
+    print("\nRecommended therapies for patient with id " + patient_id + " for condition with id " + condition_id + ":")
+    for i in range(0, len(best_therapies)):
+        print(str(i + 1) + ". " + print_therapy_by_therapy_id(best_therapies[i]))
 
 if __name__ == "__main__":
     """ 
@@ -415,7 +441,7 @@ if __name__ == "__main__":
     if patients[int(patient_id)] == None:
         print("Patient with id " + patient_id + " does not exist.")
         sys.exit()
-
+    
     # Check if condition exists
     if find_condition_by_id(conditions, condition_id) == None:
         print("Condition with id " + condition_id + " does not exist.")
@@ -433,15 +459,17 @@ if __name__ == "__main__":
         p_c = Patient_condition("pc" + str(get_biggest_patient_condition_id(patients)), start_date, end_date, condition_id)
         patient.__dict__["conditions"] = patient.__dict__["conditions"] + [p_c]
         print("\nPatient with id " + patient_id + " has newly diagnosed condition: " + condition.__dict__["name"] + " (id: " + str(condition.__dict__["id"]) + ")")
-    
+
     # Get all patients who has the given condition cured
     patients_with_condition = find_patients_by_condition(patients, condition)
+
     # Generate vectors for all patients
     df = generate_vectors(patients_with_condition, condition_id, patient.__dict__["id"], True)
+    #print(df)
 
     # Use the vectors to find the most similar patients
     similar_patients = get_most_similar_patients(20, patient, patients_with_condition, condition_id)
-    # print_patients(similar_patients)
+    #print_patients(similar_patients)
 
     # Generate vectors from the 20 most similar patients patients
     similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
@@ -454,9 +482,10 @@ if __name__ == "__main__":
     best_therapies = find_best_therapy(similar_patients_vectors)
     #print(best_therapies)
 
-    print("\nRecommended therapies for patient with id " + patient_id + " for condition with id " + condition_id + ":")
-    for i in range(0, len(best_therapies)):
-        print(str(i + 1) + ". " + print_therapy_by_therapy_id(best_therapies[i]))
+    print_recommended_therapies(best_therapies, patient_id, condition_id)
+
+    # Main TODOs
+    # Check if success rate is set always by the most recently used therapy?
 
     # TODOs
     # Check and print only the max number of recommended therpaies found!!!
