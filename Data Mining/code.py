@@ -1,8 +1,4 @@
 from random import randint
-from numpy.linalg import cond
-from scipy.sparse.extract import find
-from sklearn.cluster import KMeans
-from sklearn.neighbors import KNeighborsClassifier
 
 import numpy as np
 import json
@@ -81,6 +77,7 @@ def export_dataset(file, conditions, therapies, patients):
         json.dump({"Conditions": [condition.__dict__ for condition in conditions], "Therapies": [therapy.__dict__ for therapy in therapies], "Patients": [patient.__dict__ for patient in printable_patients]}, outfile)
     outfile.close()
 
+# Import the dataset by file url
 def import_dataset(file):
     conditions = []
     therapies = []
@@ -132,7 +129,8 @@ def import_dataset(file):
             patients.append(p)
     json_file.close()
     return conditions, therapies, patients
- 
+
+# Generates Conditions for the Dataset form the given soruce file containing the a single condition per line
 def generate_condtions(soucre_file):
     values = []
     with open(soucre_file, 'r') as conditions:
@@ -147,7 +145,8 @@ def generate_condtions(soucre_file):
             i += 1
     conditions.close()
     return values
-    
+
+# Generates Therapies for the Dataset form the given soruce file containing the a single condition per line
 def generate_therapies(soucre_file):
     values = []
     with open(soucre_file, 'r') as conditions:
@@ -160,6 +159,9 @@ def generate_therapies(soucre_file):
     conditions.close()
     return values
 
+# Generates Randomized Dates with 2 possible configurations:
+# 1. Random Dates between the given start and end date (fixed_start_date = True)
+# 2. Random Dates between default interval (fixed_start_date = False)
 def get_random_dates_with_interval(beginning=20000101, fixed_start_date=False):
     date = datetime.datetime.strptime(str(beginning), "%Y%m%d")
     if fixed_start_date:
@@ -171,13 +173,16 @@ def get_random_dates_with_interval(beginning=20000101, fixed_start_date=False):
     random_date = start_date + datetime.timedelta(days = random_days)
     return start_date.strftime("%Y%m%d"), random_date.strftime("%Y%m%d")
 
+# Selects a random condition for the dataset generation
 def get_random_condition(conditions, threated_conditions = []):
     conditions = [condition for condition in conditions if condition not in threated_conditions]
     return conditions[randint(0, len(conditions) - 1)]
 
+# Selects a random threapy for the dataset generation
 def get_random_therapy(therapies):
     return therapies[randint(0, len(therapies) - 1)]
 
+# The main method for dataset generation. Generates a dataset from the given sets of conditions and therapies
 def generate_patients(source_file, conditions, therapies):
     values = []
     condition_id_counter = 0
@@ -209,7 +214,7 @@ def generate_patients(source_file, conditions, therapies):
                 while condition.__dict__["cured"] == None:
                     p_t = Patient_therapy("tr" + str(therapy_id_counter), start_date, end_date, condition.__dict__["id"], get_random_therapy(therapies).__dict__["id"], randint(0, 100))
 
-                    #If Therapy Worked (<75%), cure the condition
+                    #If Therapy Worked (<75%), cure the condition (Optionally can be removed)
                     if p_t.__dict__["successful"] >= 75:
                         for cond in patient_conditions:
                             if cond.__dict__["id"] == p_t.__dict__["condition"]:
@@ -228,29 +233,36 @@ def generate_patients(source_file, conditions, therapies):
     patient_names.close()
     return values
 
+# Single function which needs to be called and configured to generate the dataset
 def generate_new_dataset(dataset_name):
     conditions = generate_condtions("source_data/conditions.txt")
     therapies = generate_therapies("source_data/therapies.txt")
     patients = generate_patients("source_data/names_lot.txt", conditions, therapies)
     export_dataset(dataset_name, conditions, therapies, patients)
 
+# ======== Below this, all the functions are supporting the recommendation system ========
+
+# Returns a condition from a set of Conditions by its id (eg: "pc74")
 def find_condition_by_id(conditions, id):
     for condition in conditions:
         if condition.__dict__["id"] == id:
             return condition
 
+# Returns a condition from a set of Conditions by its kind (eg: "Cond10")
 def find_condition_by_kind(conditions, id):
     for condition in conditions:
         if condition.__dict__["kind"] == id:
             return condition
     return None
 
+# Checks if condition was ever attempted to cure or not (Boolean)
 def check_if_condition_was_attempoted_to_cure(patient_therapies, condition_id):
     for patient_therapy in patient_therapies:
         if patient_therapy.__dict__["condition"] == condition_id:
             return True
     return False
 
+# Optional analysis tool, prints useful information about the given patient and its correlation with a given condition 
 def patient_analysis(patient, condtion):
     condtion = condtion.__dict__
     patient_conditions = patient.__dict__["conditions"]
@@ -279,10 +291,12 @@ def patient_analysis(patient, condtion):
     
     print("==========================\n")
 
+# Prints a list of patients in a formatted way (Name, id)
 def print_patients(patients):
     for patient in patients:
         print(patient.__dict__["name"] + " (id: " + str(patient.__dict__["id"]) + ")")
 
+# Returns a patient from a set of Patients if the given patient has the given condition (eg: "Cond10")
 def find_patients_by_condition(patients, condition):
     patients_by_condition = []
     for patient in patients:
@@ -304,6 +318,7 @@ def get_condition_kind_by_trial_condition_id(patient, trial_condition_id):
                 if patient_condition.__dict__["id"] == patient_therapies.__dict__["condition"]:
                     return patient_condition.__dict__["kind"]
 
+# Returns a list of Therpaies which were ever applied on the set of patients (passed as an argument) (eg: "['Th1', 'Th2', 'Th22']")
 def get_all_applied_therapies(patients):
     therapies = set()
     for patient in patients:
@@ -311,6 +326,8 @@ def get_all_applied_therapies(patients):
             therapies.add(trial.__dict__["therapy"])
     return sorted(therapies)
 
+# Returns the success rate of a give therapy.
+# If trial_needed is set true, it will also return the patient condition which the trial is for. (e.g: "pc76")
 def get_success_rate_of_therapy(patient, therapy, trial_needed = True):
     for trial in patient.__dict__["trials"]:
         if trial.__dict__["therapy"] == therapy:
@@ -319,12 +336,20 @@ def get_success_rate_of_therapy(patient, therapy, trial_needed = True):
             else:
                 return trial.__dict__["successful"]
 
+# Checks if a vector is zero vector or not. (Patient vectors)
 def is_zero_vector(vector):
     for v in vector:
         if v != 0:
             return False
     return True
     
+# Generates and returns the vectors of success rates of each therapy for the patients in the given set.
+# The vectors are normailzed if norm_vectors is true.
+# The vectors show the success rate of each therapy for each patient for the GIVEN condition.
+# Example      Th1      Th10      Th11
+# 7      -8.352941 -8.352941 -8.352941 
+# 41     -1.176471 -1.176471  0.000000
+# 118    -7.039216 52.960784 -7.039216
 def generate_vectors(patients, condition_id, patient_id, norm_vectos=True):
     vectors = []
     therapy_ids = get_all_applied_therapies(patients)  
@@ -357,6 +382,7 @@ def generate_vectors(patients, condition_id, patient_id, norm_vectos=True):
         df = df.apply(lambda x: x - df.mean(axis = 1))
     return df
 
+# Simple help function which returns the next free patient_condition id available.
 def get_biggest_patient_condition_id(patients):
     biggest_condition_id = 0
     for patient in patients:
@@ -366,9 +392,11 @@ def get_biggest_patient_condition_id(patients):
                 biggest_condition_id = int(id_num)
     return biggest_condition_id + 1
 
+# Calculates the cosine similarity between two vectors.
 def cosine_sim(v1, v2):
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
-   
+
+# Returns the n most similar patients to the given patient based on it's vector.
 def get_most_similar_patients(n_patients, patient, patients, condition_id):
     patients_vectors = generate_vectors(patients, condition_id, patient.__dict__["id"])
     patient_vector = patients_vectors.loc[patient.__dict__["id"]]
@@ -385,14 +413,14 @@ def get_most_similar_patients(n_patients, patient, patients, condition_id):
     ids =  patients_vectors.index[np.argsort(patient_similarities)[::-1]][:n_patients].to_list() 
     return [find_patient_by_id(patients, id) for id in ids]
     
-# Remove vectors where all the values are 0 
+# Removes vectors where all the values are 0. (Therapies)
 def remove_vectors(df):
     for (columnName, columnData) in df.iteritems():
         if is_zero_vector(columnData.values):
             df = df.drop(columnName, axis=1)
     return df
 
-# Find most recommended 5 therapies
+# Find most recommended 5 therapies (Simple sort and cut)
 def find_best_therapy(df):
     n_patients = df.shape[0]
     n_therapies = df.shape[1]
@@ -402,11 +430,13 @@ def find_best_therapy(df):
 
     return df.columns[np.argsort(recommendation_rates)[::-1]][:5].to_list()
 
+# Prints a given therapy based on it's id.
 def print_therapy_by_therapy_id(therapy_id):
     for therapy in therapies:
         if therapy.__dict__["id"] == therapy_id:
             return "Therapy: (id: " + therapy.__dict__["id"] + ") " + therapy.__dict__["name"] + " - Type: " + therapy.__dict__["type"]
-    
+
+# Prints the recommended therapies for a given patient for the requested condition.
 def print_recommended_therapies(best_therapies, patient_id, condition_id):
     print("\nRecommended therapies for patient with id " + patient_id + " for condition with id " + condition_id + ":")
     for i in range(0, len(best_therapies)):
@@ -417,14 +447,15 @@ if __name__ == "__main__":
     Input 1: A set P of patients, their conditions, and the ordered list of trials each patient has done for each of his/her conditions (i.e, his/her medical history)
     Input 2: A specific patient P[q'], his/her conditions, the ordered list of trials he/she has done for each of these conditions (i.e, his/her medical history). 
     Input 3: A condition c[q]
-    Output: A therapy th[ans]
 
     This means that to run the program you need to provide 3 arguments: 
     The dataset, The patient id, The condition id
     > code.py dataset.json JohnID headacheID 
-    output: Recommended Therapy for the patient with id JohnID for the condition with id headacheID
+    output: Recommended Therapies for the patient with id JohnID for the condition with id headacheID
             The output of the program will be an ordered list of 5 recommended therapies
     """
+
+    # Generate a new Dataset with the given name (Optional)
     #generate_new_dataset("dataset_new.json")
 
     # Check number of parameters
@@ -465,33 +496,27 @@ if __name__ == "__main__":
 
     # Generate vectors for all patients
     df = generate_vectors(patients_with_condition, condition_id, patient.__dict__["id"], True)
-    #print(df)
 
     # Use the vectors to find the most similar patients
     similar_patients = get_most_similar_patients(20, patient, patients_with_condition, condition_id)
-    #print_patients(similar_patients)
+
+    if len(similar_patients) == 0:
+        print("\nThere are no patients with the same condition as the patient with id " + patient_id + ".")
+        print("Exciting...")
+        sys.exit()
 
     # Generate vectors from the 20 most similar patients patients
     similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
-    #print(similar_patients_vectors)
 
+    # Remove zero vectors
     similar_patients_vectors = remove_vectors(similar_patients_vectors)
-    print(similar_patients_vectors)
 
     # For each therapy, predict the success rate of each therapies, and find the best ones
     best_therapies = find_best_therapy(similar_patients_vectors)
-    #print(best_therapies)
 
-    print_recommended_therapies(best_therapies, patient_id, condition_id)
-
-    # Main TODOs
-    # Check if success rate is set always by the most recently used therapy?
-
-    # TODOs
-    # Check and print only the max number of recommended therpaies found!!!
-    # Check if print if there is no recommended therapy found
-    # Check if recommendations are really good - Recommended users are really similar (Should be good)
-    # Predict each therapy for our patient and find the best one
-    # Take outputs as examples for a step by step walkthrough of the program
-    # Add error handling in case of no similar patients
-    # Add error handling in case of no good therapies can be found
+    # Check if there is recommended therapy found
+    if len(best_therapies) == 0:
+        print('No recommended therapy is found!')
+        sys.exit()
+    else:
+        print_recommended_therapies(best_therapies, patient_id, condition_id)
