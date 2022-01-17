@@ -215,6 +215,7 @@ Recommended therapies for patient with id 51362 for condition with id Cond316:
 ==================================================================================================
 
 7. Test Case: 51366, pc277723 -> Cond322
+py code.py datasetB.json 51366 Cond322
        Th1  Th12  Th30  Th31  Th34  Th5
 ids
 17902  100     0    47     0     0    0

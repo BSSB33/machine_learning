@@ -421,14 +421,22 @@ def remove_vectors(df):
     return df
 
 # Find most recommended 5 therapies (Simple sort and cut)
-def find_best_therapy(df):
-    n_patients = df.shape[0]
-    n_therapies = df.shape[1]
+def find_best_therapies(patient_vectors, n_recommendations):
+    n_patients = patient_vectors.shape[0]
+    n_therapies = patient_vectors.shape[1]
     recommendation_rates = []
     for i in range(n_therapies):
-        recommendation_rates.append((1 / n_patients) * df.iloc[:,i].sum())
+        recommendation_rates.append((1 / n_patients) * patient_vectors.iloc[:,i].sum())
+    return patient_vectors.columns[np.argsort(recommendation_rates)[::-1]][:n_recommendations].to_list()
 
-    return df.columns[np.argsort(recommendation_rates)[::-1]][:5].to_list()
+def find_success_rate_of_therapy(patient_vectors, therapy_id):
+    sum = 0
+    patient_counter = 0
+    for success_rate in patient_vectors[therapy_id]:
+        if success_rate != 0:
+            sum += success_rate
+            patient_counter += 1
+    return (1 / patient_counter) * sum
 
 # Prints a given therapy based on it's id.
 def print_therapy_by_therapy_id(therapy_id):
@@ -459,7 +467,7 @@ if __name__ == "__main__":
     #generate_new_dataset("dataset_new.json")
 
     # Check number of parameters
-    if len(sys.argv) != 4:
+    if len(sys.argv) < 4:
         print("Usage: \"py code.py dataset.json JohnID headacheID\"")
         sys.exit()
 
@@ -496,9 +504,10 @@ if __name__ == "__main__":
 
     # Generate vectors for all patients
     df = generate_vectors(patients_with_condition, condition_id, patient.__dict__["id"], True)
+    n_similar_patients = round(len(df) / 10)
 
     # Use the vectors to find the most similar patients
-    similar_patients = get_most_similar_patients(20, patient, patients_with_condition, condition_id)
+    similar_patients = get_most_similar_patients(n_similar_patients, patient, patients_with_condition, condition_id)
 
     if len(similar_patients) == 0:
         print("\nThere are no patients with the same condition as the patient with id " + patient_id + ".")
@@ -507,16 +516,24 @@ if __name__ == "__main__":
 
     # Generate vectors from the 20 most similar patients patients
     similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
-
+    
     # Remove zero vectors
     similar_patients_vectors = remove_vectors(similar_patients_vectors)
-
+    #print(similar_patients_vectors[:20])
     # For each therapy, predict the success rate of each therapies, and find the best ones
-    best_therapies = find_best_therapy(similar_patients_vectors)
+    best_therapies = find_best_therapies(similar_patients_vectors, 5)
 
     # Check if there is recommended therapy found
     if len(best_therapies) == 0:
-        print('No recommended therapy is found!')
+        print('No recommended therapy was found!')
+        print("Exciting...")
         sys.exit()
-    else:
+    elif len(sys.argv) == 4:
         print_recommended_therapies(best_therapies, patient_id, condition_id)
+    elif len(sys.argv) == 5:
+        therapy_success_rate = find_success_rate_of_therapy(similar_patients_vectors, sys.argv[4])
+        print("The predicted success rate of the therapy with id " + sys.argv[4] + " for patient with id " + patient_id + " for condition with id " + condition_id +  " is: ")
+        print(str(therapy_success_rate))
+
+    # Export vectors to csv (Optional)
+    similar_patients_vectors.to_csv("outputs/output_" + patient_id + "_" + condition_id + ".csv")
