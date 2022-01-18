@@ -1,0 +1,37 @@
+D:\Projects\machine_learning\Data Mining>py test.py
+[[29102, 'Th37', 29], [44552, 'Th46', 100], [78951, 'Th10', 100], [47046, 'Th46', 64], [68221, 'Th32', 16], [95582, 'Th49', 100], [74514, 'Th15', 57], [6915, 'Th33', 31], [26402, 'Th34', 100], [35797, 'Th46', 18]]
+py code.py datasetB.json 29102 Cond248 Th37
+Result: 63.888888888888886
+py code.py datasetB.json 44552 Cond248 Th46
+Result: 59.8095238095238
+py code.py datasetB.json 78951 Cond248 Th10
+Result: 70.35714285714285
+py code.py datasetB.json 47046 Cond248 Th46
+Result: 74.77777777777777
+py code.py datasetB.json 68221 Cond248 Th32
+Result: 59.25
+py code.py datasetB.json 95582 Cond248 Th49
+Result: 82.6111111111111
+py code.py datasetB.json 74514 Cond248 Th15
+Result: 79.77777777777777
+py code.py datasetB.json 6915 Cond248 Th33
+Result: 82.0
+py code.py datasetB.json 26402 Cond248 Th34
+Result: 66.1470588235294
+py code.py datasetB.json 35797 Cond248 Th46
+Result: 31.5
+63.888888888888886 - 29
+59.8095238095238 - 100
+70.35714285714285 - 100
+74.77777777777777 - 64
+59.25 - 16
+82.6111111111111 - 100
+79.77777777777777 - 57
+82.0 - 31
+66.1470588235294 - 100
+31.5 - 18
+RMSE: 32.323989792906126
+Precision: 1.0
+Rank correlation: 37.241700252546565
+
+D:\Projects\machine_learning\Data Mining>

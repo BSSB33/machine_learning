@@ -1,0 +1,351 @@
+SUM UP:
+Test Case     PatientID	Patient Condition    Condtition    Recommendations in Order
+1.            6		pc32                 Cond248       [Th46, Th49, Th29, Th10, Th48]
+2.            51345		pc277636             Cond272       [Th50, Th22, Th32, Th25, Th47]
+3.            82486		pc445475             Cond16        [Th5,  Th26, Th25, Th14, Th35]
+4.            51348		pc277652             Cond216       [Th16, Th51, Th47, Th43, Th8 ]
+5.            51358		pc277696             Cond120       [Th4,  Th16]
+6.            51362		pc277711             Cond316       [Th50, Th26, Th11, Th35, Th30]
+7.            51366		pc277723             Cond322       [Th31, Th1,  Th30, Th5,  Th12]
+8.            51387		pc277825             Cond103       [Th8,  Th32, Th31, Th14, Th16]
+9.            51416		pc277986             Cond12        [Th12, Th50, Th10, Th26, Th11]
+10.           51453		pc278191             Cond176       [Th38, Th8,  Th40, Th36, Th14]
+
+==================================================================================================
+
+1. Test Case: 6, pc32 -> Cond248
+py code.py datasetB.json 6 Cond248
+       Th10  Th29  Th32  Th40  Th46  Th48  Th49
+ids
+52547     0   100     0     0     0     0    51
+76231   100     0     0     0     0    33     0
+58579     0     0    57    54   100     0     0
+7602      0   100     0     0     0    55     0
+47295     0    67     0     0     0     0     0
+44552     0     0     0     0   100     0     0
+93410     0     0     0     0     0     0   100
+9705      0     0     0     0   100     0     0
+46901     0     0     0     0     0     0   100
+46705     0     0     0     0   100     0     0
+55640     0     0     0     0     0     0    43
+8250      0     0     0     0   100     0     0
+51257     0     0     0     0   100     0     0
+30229     0     0     0     0     0     0   100
+33729     0     0     0     0     0     0   100
+72251     0     0     0     0     0     0   100
+31181     0     0     0     0   100     0     0
+43879     0     0     0     0     0     0   100
+36041     0     0     0     0   100     0     0
+41606     0     0     0     0     0     0   100
+
+Recommended therapies for patient with id 6 for condition with id Cond248:
+1. Therapy: (id: Th46) stem cell therapy - Type: Physio
+2. Therapy: (id: Th49) systemic therapy - Type: Sugar
+3. Therapy: (id: Th29) magnetic resonance therapy - Type: Physio
+4. Therapy: (id: Th10) curative therapy - Type: Acid
+5. Therapy: (id: Th48) supportive therapy - Type: Acid
+
+==================================================================================================
+
+2. Test Case: 51345, pc277636 -> Cond272
+py code.py datasetB.json 51345 Cond272
+       Th10  Th11  Th15  Th19  Th21  Th22  Th25  Th29  Th32  Th33  Th38  Th47  Th5  Th50  Th7
+ids
+88087     0     0     0     0     0    65   100     0    76     0     0     0    0     0    7
+95872     0     0     0     0     0    54     0     0     0     0     0   100    0    61    0
+19146     0     0     0     0     0    27     0     0     0     0     0    27    0     0    0
+2168      0     0     0     0     0     0     0     0   100     0     0    43    0     0    0
+53150     0    48     0     0     0    45     0     0    61     0    43     0    0     0    0
+31134     0     0    58     0     0   100     0     0     0     0     0     0    0     0    0
+38177    11     0     0    87     0   100     0     0    81     0    90     0    0     0    0
+33750     0     0     0     0    54   100     0     0     0     0     0     0    0     0    0
+39331     0     0     0     0     0     0    88    72     0     0     0   100    0     0    0
+82933     0     0   100     0     0     0     0     0    61     0     0     0    0     0    0
+73339     0     0     0     0     0     0     0     0     0     0     0     0   40   100    0
+14581     0     0     0     0     0     0   100     0     0    29    54     0    0     0    0
+56477     0     0     0     0     0    47     0     0     0     0     0     0    0     0    0
+41738     0     0     0     0     0    15     0     0     0     0     0     0    0     0    0
+70586     0     0     0     0     0    30     0     0     0     0     0     0    0     0    0
+79978     0     0     0     0     0     0     0     0     0     0     0     0    0   100    0
+37920     0     0     0     0     0     0     0     0     0     0     0     0    0   100    0
+51800     0     0     0     0     0     0     0     0     0     0     0     0    0   100    0
+97521     0     0     0     0     0     0     0     0     0     0     0     0    0   100    0
+84850     0     0     0     0     0     0     0     0     0     0     0     0    0   100    0
+
+Recommended therapies for patient with id 51345 for condition with id Cond272:
+1. Therapy: (id: Th50) Waon therapy - Type: Sugar
+2. Therapy: (id: Th22) immunosuppressive therapy - Type: Sugar
+3. Therapy: (id: Th32) molecular chaperone therapy - Type: Physio
+4. Therapy: (id: Th25) investigational therapy - Type: Sugar
+5. Therapy: (id: Th47) stepdown therapy - Type: Sugar
+
+==================================================================================================
+
+3. Test Case: 82486, pc445475 -> Cond16
+py code.py datasetB.json 82486 Cond16
+       Th11  Th13  Th14  Th25  Th26  Th28  Th31  Th35  Th40  Th42  Th45  Th49  Th5
+ids
+28892     0     0    52   100     0     0     0     0     0     0     0     0    0
+87931     0     0     0     0   100    33     0     0     0     0     0    65    0
+29312     0    57     0    68     0     0     0     0     0     0     0     0  100
+68285     0     0     0     0     0     0    30     0     0     0     0     0  100
+41706    42     0     0     0   100     0    44     0     0     0     0     0    0
+80809     0     0     0   100     0     0     0     0     0     0     0     0    9
+58151     0     0     0     0    70     0     0   100    68     0     0     0    0
+78612     0     0    61     0     0     0     0     0     0     0    35     0   37
+49738     0     0     0     0    75     0    13     0     0    25     0     0    0
+32367     0     0     0     0     0     0     0     1     0     0     0     0  100
+65422     0     0     0    67     0     0     0     0     0     0     0     0    0
+46897     0     0     0     0     0     0     0     0     0     0     0     0  100
+52974     0     0     0     0     0     0     0     0     0     0     0     0  100
+94209     0     0     0     0     0     0     0     0     0     0     0     0  100
+91086     0     0     0     0     0     0     0     0     0     0     0     0  100
+54606     0     0     0     0     0     0     0     0     0     0     0     0  100
+7878      0     0     0     0     0     0     0     0     0     0     0     0  100
+87772     0     0     0     0     0     0     0     0     0     0     0     0  100
+59746     0     0     0     0     0     0     0     0     0     0     0     0  100
+77331     0     0     0     0     0     0     0     0     0     0     0     0  100
+
+Recommended therapies for patient with id 82486 for condition with id Cond16:
+1. Therapy: (id: Th5) cell transfer therapy - Type: Physio
+2. Therapy: (id: Th26) laser therapy - Type: Physio
+3. Therapy: (id: Th25) investigational therapy - Type: Sugar
+4. Therapy: (id: Th14) electromagnetic therapy (alternative medicine) - Type: Acid
+5. Therapy: (id: Th35) neurologic music therapy - Type: Physio
+
+==================================================================================================
+
+4. Test Case: 51348, pc277652 -> Cond216
+py code.py datasetB.json 51348 Cond216
+       Th1  Th11  Th15  Th16  Th18  Th19  Th2  Th26  Th27  Th28  Th29  Th34  Th36  Th37  Th39  Th4  Th42  Th43  Th44  Th47  Th5  Th51  Th6  Th8
+ids
+73777    0     0     0     0     0     0    0     0     0     0     0     0     0     0     0    0     0     0     0   100    0     0   90    0
+69269    0     0     0    89     0     0    0     0     0     0     0     0     0     0     0    0     0     0     0   100    0     0    0    0
+30699    0    49     0     0     0     0    0     0     0     0     0     0     0     0     0    0     0     0     0   100    0     0    0    0
+33762    0     0     0   100     0     0    0     0    83     0     0     0     0     0     0    0     0     0     0     0    0     0    0    0
+90992    0     0     0   100     0     0    0     0     0     0     0     0     0    60     0    0     0     0     0     0    0    52    0    0
+5118     0     0     0    70     0     0    0     0     0     0     0     0     4     0     0    0     0     0    39   100    0     0    0    0
+87508    0     0     0     0     0     0    0     0     0     0    80     0     0     0     0    0     0   100     0     0    0     0    0   79
+25363    0     0     0     0     0     0    0     0     0     0     0     0     0     0     0   11    13     0     0     0   67   100    0   44
+38619    0     0     0   100    28     0    0     0     0     0     0     0     0     0     0    0     0     0     0     0    0     0    0   39
+10247    0     0     0     0     0     0    0     0    20     0     0     0     0     0     0    0     0     0     0     0    0     0    0  100
+20546    0     0     0     0     0    35    0     0     0     0     0     0     0     0     0    0     0   100     0    11    0     0    0    0
+67914    0     0     0     0     0     0    0     0     0     0     0     0     0     0     0   10     0   100     0     0    0     0    0    0
+70806   15     0     0     0     0     0    0     0     0     0     0     0     0     0     0    0     0     0     0     0    0   100    0    0
+63530    0     0     0     0     0     0   30     0     0     0     0     0     0     0     0    0     0   100     0    21    0     0    0    0
+32680    0     0     0   100     0    40    0     0     0     0     0     0     0     0     0    0     0     0     0     0    0     0    0    0
+85567    0     0   100     0     0     0    0    12     0     0     0    21     0     0    39   16     0     0     0     0    0    83   50    0
+96551    0     0     0     0     0     0    0     0     0     0     0     0     0     0     0    0     0     0     0     0    0     2    0  100
+74923    0     0     0     0     0    13    0     0     0     0     0     0     0     0     0    0     0     0     0     0    0     0   23    0
+71571    0     0     0     0     0     0    0     0     0     0     0     0     0     0    25    0     0     0     0     0   30   100    0    0
+16493    0     0     0     0     0     0    0     0     0     7     0     0     0     0     0    0     0     0     0     0    0   100    0    0
+
+Recommended therapies for patient with id 51348 for condition with id Cond216:
+1. Therapy: (id: Th16) estrogen replacement therapy - Type: Physio
+2. Therapy: (id: Th51) water cure (therapy) - Type: Acid
+3. Therapy: (id: Th47) stepdown therapy - Type: Sugar
+4. Therapy: (id: Th43) respiratory therapy - Type: Physio
+5. Therapy: (id: Th8) counseling - Type: Acid
+
+==================================================================================================
+
+5. Test Case: 51358, pc277696 -> Cond120
+py code.py datasetB.json 51358 Cond120
+       Th16  Th4
+ids
+16833     0   45
+88782     0   44
+10969     0   62
+70548     0   56
+86522    59    0
+82958     0  100
+61368     0  100
+86812     0  100
+27971     0  100
+96297     0  100
+59821     0  100
+99554     0  100
+5279      0  100
+85283     0  100
+6752      0  100
+23433     0  100
+4631     26    0
+91541    55    0
+12979     9    0
+84551    75    0
+
+Recommended therapies for patient with id 51358 for condition with id Cond120:
+1. Therapy: (id: Th4) aurotherapy - Type: Sugar
+2. Therapy: (id: Th16) estrogen replacement therapy - Type: Physio
+
+==================================================================================================
+
+6. Test Case: 51362, pc277711 -> Cond316
+py code.py datasetB.json 51362 Cond316
+       Th1  Th11  Th24  Th26  Th30  Th33  Th35  Th50
+ids
+2746     0     9     0     0     0     0   100     0
+85103    0    87     0   100     0     0     0   100
+85103    0    87     0   100     0     0     0   100
+42770   48     0     2     0    71     0    47     0
+87714    0     0     0     0     0    32     0     0
+60740    0     0     0     0     0     0     0   100
+46350    0     0     0     0     0     0     0   100
+44623    0     0     0     0     0     0     0   100
+63563    0     0     0     0     0     0     0   100
+14209    0     0     0     0     0     0     0   100
+77438    0     0     0     0     0     0     0   100
+98044    0     0     0     0     0     0     0   100
+10473    0     0     0     0     0     0     0   100
+98095    0     0     0     0     0     0     0   100
+49325    0     0     0     0     0     0     0   100
+98782    0     0     0     0     0     0     0   100
+62022    0     0     0     0     0     0     0   100
+75559    0     0     0     0     0     0     0   100
+10804    0     0     0     0     0     0     0   100
+49945    0     0     0     0     0     0     0   100
+
+Recommended therapies for patient with id 51362 for condition with id Cond316:
+1. Therapy: (id: Th50) Waon therapy - Type: Sugar
+2. Therapy: (id: Th26) laser therapy - Type: Physio
+3. Therapy: (id: Th11) definitive therapy - Type: Sugar
+4. Therapy: (id: Th35) neurologic music therapy - Type: Physio
+5. Therapy: (id: Th30) medical nutrition therapy - Type: Sugar
+
+==================================================================================================
+
+7. Test Case: 51366, pc277723 -> Cond322
+py code.py datasetB.json 51366 Cond322
+       Th1  Th12  Th30  Th31  Th34  Th5
+ids
+17902  100     0    47     0     0    0
+94761  100    45    61     0     0   40
+9788    84     0   100     0    42   70
+18138    0     0     0    14     0    0
+231      0     0     0    17     0    0
+35481    0     0     0    44     0    0
+44218   23     0     0     0     0    0
+72126   32     0     0     0     0    0
+4918     0     0     0   100     0    0
+92123    0     0     4     0     0    0
+59205    0     0     0   100     0    0
+37997    0     0     0   100     0    0
+60652    0     0     0   100     0    0
+2486     0     0     0   100     0    0
+41985    0     0     0   100     0    0
+9227     0     0     0   100     0    0
+79849    0     0     0   100     0    0
+10450    0     0     0   100     0    0
+51471    0     0     0   100     0    0
+98962    0     0     0   100     0    0
+
+Recommended therapies for patient with id 51366 for condition with id Cond322:
+1. Therapy: (id: Th31) medical therapy - Type: Acid
+2. Therapy: (id: Th1) abortive therapy - Type: Physio
+3. Therapy: (id: Th30) medical nutrition therapy - Type: Sugar
+4. Therapy: (id: Th5) cell transfer therapy - Type: Physio
+5. Therapy: (id: Th12) dietary therapy - Type: Acid
+
+==================================================================================================
+
+8. Test Case: 51387, pc277825 -> Cond103
+py code.py datasetB.json 51387 Cond103
+       Th14  Th15  Th16  Th19  Th2  Th31  Th32  Th34  Th47  Th8
+ids
+17782     0     0     0     0    0    69     0     0     0  100
+60035    51     0     0    28    0     0   100     0     0    0
+92147     0     0    81     0   26    75     0     0     0    0
+98610     0     0     0     0    0     0   100     0    30   16
+98251     0    23     0     0    0   100     0    13     0    0
+23746    41     0     0     0    0     0     0     0     0    0
+82708     0     0     0     0    0     0    37     0     0    0
+2065      0     0     0     0    0     1     0     0     0    0
+31534     0     0     0     0    0     0     0     0     0   51
+19754     0     0     0     0    0     0     0     0     0   78
+77046     0     0     0     0    0     0     0     0     0   66
+81776     0     0     0     0    0     0    41     0     0    0
+93520     0     0     0     0    0     0     0     0     0  100
+73294     0     0     0     0    0     0     0     0     0  100
+41954     0     0     0     0    0     0     0     0     0  100
+79608     0     0     0     0    0     0    88     0     0    0
+8226      0     0     0     0    0     0     0     0     0  100
+47948     0     0     0     0    0     0     0     0     0  100
+62847     0     0     0     0    0     0     0     0     0  100
+66930     0     0     0     0    0     0     0     0     0  100
+
+Recommended therapies for patient with id 51387 for condition with id Cond103:
+1. Therapy: (id: Th8) counseling - Type: Acid
+2. Therapy: (id: Th32) molecular chaperone therapy - Type: Physio
+3. Therapy: (id: Th31) medical therapy - Type: Acid
+4. Therapy: (id: Th14) electromagnetic therapy (alternative medicine) - Type: Acid
+5. Therapy: (id: Th16) estrogen replacement therapy - Type: Physio
+
+==================================================================================================
+
+9. Test Case: 51416, pc277986 -> Cond12
+py code.py datasetB.json 51416 Cond12
+       Th10  Th11  Th12  Th13  Th14  Th16  Th22  Th24  Th25  Th26  Th3  Th30  Th34  Th37  Th43  Th45  Th46  Th49  Th50  Th51  Th6  Th7
+ids
+18991     0     0   100     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0    53     0    0    0
+91227     0     0    82     0    55     0     0     0    49     0  100     0     0     0     0     0     0     3     0     0    0    0
+82358     0     0     0     0     0     0     0     0    23     0    0     0     0     0     0     0     0     0   100     0    0    0
+78484     0    40     0     0     0    21   100     0    75     0    0     0    46     0    24     0     0     0     0     0   21    0
+90500     0    33     0     0     0     0     0     0     0   100    0     0     0     0     0     0     0     0     0     0    0    0
+34587     0    88     0     0     0     0     0     5    14     0    0     0     0     0     0     0     0     0     0     0    0    0
+41174     0     0    31     0     0     0     0     0     0   100    0     0     0     0     0     0     0     0     0     0    0    4
+38170     0     0   100    50     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+31652    54     0     0     0     0     0     0     0     0     0    0   100     0     0     0     0     0     0    35     0    0    0
+4000    100     0     0     0     0     0     0     0     0     0    0     0     0    14     0     0    13     0     0     0    0    0
+96320     0     0   100     8     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+12020     0     0     0     0     0     0    52     0     0    39    0     0     0     0     0     4     0     0     0    17    0    0
+58248     0    60     0     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+84481    74     0     0     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+83723     0     0    37     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+6526     65     0     0     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+8230      0     0     0     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0    17     0    0    0
+93375     0     0    19     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0     0     0    0    0
+40276     0     0     0     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0   100     0    0    0
+31245     0     0     0     0     0     0     0     0     0     0    0     0     0     0     0     0     0     0   100     0    0    0
+
+Recommended therapies for patient with id 51416 for condition with id Cond12:
+1. Therapy: (id: Th12) dietary therapy - Type: Acid
+2. Therapy: (id: Th50) Waon therapy - Type: Sugar
+3. Therapy: (id: Th10) curative therapy - Type: Acid
+4. Therapy: (id: Th26) laser therapy - Type: Physio
+5. Therapy: (id: Th11) definitive therapy - Type: Sugar
+
+==================================================================================================
+
+10. Test Case: 51453, pc278191 -> Cond176
+py code.py datasetB.json 51453 Cond176
+       Th12  Th14  Th19  Th21  Th24  Th28  Th29  Th3  Th34  Th35  Th36  Th37  Th38  Th39  Th40  Th43  Th7  Th8  Th9
+ids
+61651     0     0     0     0     0     0     0    0     0     0     0     0    21     0     0     0    0    0    0
+26586     0     0     0     0     0     0     0    0     0     0     0     0    29     0     0     0    0    0    0
+11805     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+94375     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+22102     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+11607     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+48789     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+88336     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+94800     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+71149     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+46440     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+93108     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+72103     0     0     0     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+11120     0     0    35     0     0     0     0    0     0     0     0     0   100     0     0     0    0    0    0
+32127     0    78     0     0     0     0     0    0     0    19     0     0   100     0     0     0    0   74    0
+32995     0     0     0     0     0     0     0   36     0     0     0     0   100     0     0     0    0    0    0
+71984    72     0     0    21     0     0     0    0     0     0     0     0    76     0     0     0    0  100    0
+49418     0     0     0     0     0     0     0    0     0     0     0     0   100    54     0     0    0    0    0
+20679     0     0     0     0     0     0     1    0     0     0     0     0    35     0   100     3    0    0    0
+30258     0     0     0     0    15    35     0    0    78     0    85    77   100     0     0     0   21    3   23
+
+Recommended therapies for patient with id 51453 for condition with id Cond176:
+1. Therapy: (id: Th38) polytherapy - Type: Sugar
+2. Therapy: (id: Th8) counseling - Type: Acid
+3. Therapy: (id: Th40) prophylactic therapy - Type: Acid
+4. Therapy: (id: Th36) neutron therapy - Type: Acid
+5. Therapy: (id: Th14) electromagnetic therapy (alternative medicine) - Type: Acid
+
+==================================================================================================

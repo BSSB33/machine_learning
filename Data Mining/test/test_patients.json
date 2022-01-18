@@ -1,0 +1,140 @@
+{
+    "Test Patients": [
+        {
+            "id": 52,
+            "name": "Mysinger",
+            "conditions": [
+                {
+                    "id": "pc97",
+                    "diagnosed": "20050905",
+                    "cured": null,
+                    "kind": "Cond290"
+                },
+                {
+                    "id": "pc98",
+                    "diagnosed": "20120614",
+                    "cured": "20160525",
+                    "kind": "Cond201"
+                }
+            ],
+            "trials": [
+                {
+                    "id": "tr124",
+                    "start": "20120614",
+                    "end": "20160525",
+                    "condition": "pc98",
+                    "therapy": "Th16",
+                    "successful": 79
+                }
+            ]
+        },
+        {
+            "id": 73,
+            "name": "Siemon",
+            "conditions": [
+                {
+                    "id": "pc138",
+                    "diagnosed": "20111209",
+                    "cured": null,
+                    "kind": "Cond6"
+                },
+                {
+                    "id": "pc139",
+                    "diagnosed": "20040913",
+                    "cured": "20090505",
+                    "kind": "Cond17"
+                },
+                {
+                    "id": "pc140",
+                    "diagnosed": "20110202",
+                    "cured": "20211016",
+                    "kind": "Cond79"
+                }
+            ],
+            "trials": [
+                {
+                    "id": "tr173",
+                    "start": "20110202",
+                    "end": "20191017",
+                    "condition": "pc140",
+                    "therapy": "Th20",
+                    "successful": 17
+                },
+                {
+                    "id": "tr174",
+                    "start": "20191017",
+                    "end": "20211004",
+                    "condition": "pc140",
+                    "therapy": "Th19",
+                    "successful": 35
+                },
+                {
+                    "id": "tr175",
+                    "start": "20211004",
+                    "end": "20211016",
+                    "condition": "pc140",
+                    "therapy": "Th19",
+                    "successful": 75
+                },
+                {
+                    "id": "tr176",
+                    "start": "20040913",
+                    "end": "20090505",
+                    "condition": "pc139",
+                    "therapy": "Th4",
+                    "successful": 81
+                }
+            ]
+        },
+        {
+            "id": 83,
+            "name": "Tuffin",
+            "conditions": [
+                {
+                    "id": "pc160",
+                    "diagnosed": "20020620",
+                    "cured": null,
+                    "kind": "Cond112"
+                },
+                {
+                    "id": "pc161",
+                    "diagnosed": "20150722",
+                    "cured": "20190327",
+                    "kind": "Cond138"
+                },
+                {
+                    "id": "pc162",
+                    "diagnosed": "20161214",
+                    "cured": null,
+                    "kind": "Cond111"
+                }
+            ],
+            "trials": [
+                {
+                    "id": "tr196",
+                    "start": "20150722",
+                    "end": "20171010",
+                    "condition": "pc161",
+                    "therapy": "Th12",
+                    "successful": 11
+                },
+                {
+                    "id": "tr197",
+                    "start": "20171010",
+                    "end": "20190318",
+                    "condition": "pc161",
+                    "therapy": "Th21",
+                    "successful": 12
+                },
+                {
+                    "id": "tr198",
+                    "start": "20190318",
+                    "end": "20190327",
+                    "condition": "pc161",
+                    "therapy": "Th1",
+                    "successful": 97
+                }
+            ]
+        }
+    ]
+}

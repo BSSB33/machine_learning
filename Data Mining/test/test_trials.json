@@ -1,0 +1,28 @@
+{
+    "Test Trials": [
+                {
+                    "id": "tr124",
+                    "start": "20120614",
+                    "end": "20160525",
+                    "condition": "pc98",
+                    "therapy": "Th16",
+                    "successful": 79
+                },
+                {
+                    "id": "tr126",
+                    "start": "20200320",
+                    "end": "20210825",
+                    "condition": "pc102",
+                    "therapy": "Th6",
+                    "successful": 94
+                },
+                {
+                    "id": "tr196",
+                    "start": "20150722",
+                    "end": "20171010",
+                    "condition": "pc161",
+                    "therapy": "Th12",
+                    "successful": 11
+                }
+            ]
+}
