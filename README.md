@@ -34,6 +34,9 @@ Despite passing the subject at the university, I was very far from being satisfi
 This lab was spearated from this repository, but it can be found here: Link to the DSC-Lab repository [DSC-Lab Link](https://github.com/BSSB33/DSC-Lab/)  
 The Paper/Report Is available here [Lab Report/Paper](https://github.com/BSSB33/DSC-Lab/blob/main/Data_Science_Lab___Paper_2021.pdf)
 
+### Data Mining Subject at UniTrento:
+During the semester, a recommendation system had to be implemented. I used collaborative filtering. All the files can be found in this repository. The Report is available here [Data Mining Report](https://github.com/BSSB33/machine_learning/blob/main/Data%20Mining/Data_Mining_Final_Project_2022.pdf)
+
 ### Learning/Practice Materials
 Additional data, class materials for Machine Learning:
 - ELTE Software for Advanced Machine Learning (Class Materials + Assignment)
