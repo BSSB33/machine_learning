@@ -1,5 +1,5 @@
 from random import randint
-
+import random
 import numpy as np
 import json
 import datetime
@@ -425,10 +425,11 @@ def find_best_therapies(patient_vectors, n_recommendations):
     n_patients = patient_vectors.shape[0]
     n_therapies = patient_vectors.shape[1]
     recommendation_rates = []
-    for i in range(n_therapies):
-        recommendation_rates.append((1 / n_patients) * patient_vectors.iloc[:,i].sum())
+    for therapy in range(n_therapies):
+        recommendation_rates.append((1 / n_patients) * patient_vectors.iloc[:, therapy].sum())
     return patient_vectors.columns[np.argsort(recommendation_rates)[::-1]][:n_recommendations].to_list()
 
+# Makes a prediction for the given success rate.
 def find_success_rate_of_therapy(patient_vectors, therapy_id):
     sum = 0
     patient_counter = 0
@@ -449,6 +450,9 @@ def print_recommended_therapies(best_therapies, patient_id, condition_id):
     print("\nRecommended therapies for patient with id " + patient_id + " for condition with id " + condition_id + ":")
     for i in range(0, len(best_therapies)):
         print(str(i + 1) + ". " + print_therapy_by_therapy_id(best_therapies[i]))
+
+def remove_duplicates(df):
+    return df.drop_duplicates(subset=None, keep='first', inplace=False)
 
 if __name__ == "__main__":
     """ 
@@ -516,9 +520,10 @@ if __name__ == "__main__":
 
     # Generate vectors from the 20 most similar patients patients
     similar_patients_vectors = generate_vectors(similar_patients, condition_id, patient.__dict__["id"], False)
-    
-    # Remove zero vectors
+
+    # Remove zero vectors & duplicates
     similar_patients_vectors = remove_vectors(similar_patients_vectors)
+    similar_patients_vectors = remove_duplicates(similar_patients_vectors)
     #print(similar_patients_vectors[:20])
     # For each therapy, predict the success rate of each therapies, and find the best ones
     best_therapies = find_best_therapies(similar_patients_vectors, 5)
@@ -529,10 +534,12 @@ if __name__ == "__main__":
         print("Exciting...")
         sys.exit()
     elif len(sys.argv) == 4:
+        print("Recommending therapies...")
         print_recommended_therapies(best_therapies, patient_id, condition_id)
     elif len(sys.argv) == 5:
+        #print("Calculationg success rate...")
         therapy_success_rate = find_success_rate_of_therapy(similar_patients_vectors, sys.argv[4])
-        print("The predicted success rate of the therapy with id " + sys.argv[4] + " for patient with id " + patient_id + " for condition with id " + condition_id +  " is: ")
+        #print("The predicted success rate of the therapy with id " + sys.argv[4] + " for patient with id " + patient_id + " for condition with id " + condition_id +  " is: ")
         print(str(therapy_success_rate))
 
     # Export vectors to csv (Optional)
